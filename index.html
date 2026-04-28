@@ -111,6 +111,7 @@ tr:hover td{background:var(--surf2)}
 .int-card p{font-size:11.5px;color:var(--t2);line-height:1.5;margin-bottom:8px}
 .int-trigger{font-size:10px;font-family:'JetBrains Mono';color:var(--t3);background:var(--surf2);padding:5px 8px;border-radius:4px}
 
+#int-table-body td, #int-table-body th { padding: 8px 12px; border-bottom: 1px solid var(--border); }
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--surf)}
 ::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:3px}
@@ -273,31 +274,44 @@ tr:hover td{background:var(--surf2)}
   </div>
 </div>
 
-<!-- ── PAGE: INTERVENTIONS ─────────────────────────────────────────── -->
+<!-- ── PAGE: INTERVENTIONS ──────────────────────────────────────────── -->
 <div class="page" id="page-interventions">
-  <div class="page-header" style="margin-top:16px"><div class="page-title">Intervention Programs</div><div class="page-sub">Six evidence-based programs — each triggered by a specific KPI threshold from the dataset</div></div>
-  <div class="chart-card" style="margin-bottom:22px;border:1px solid rgba(0,212,170,0.3);background:rgba(0,212,170,0.05)">
-    <div style="display:flex;align-items:center;gap:14px">
-      <div style="font-size:28px">📊</div>
-      <div>
-        <div class="chart-title" style="color:var(--teal);margin-bottom:4px">Before / After Comparison</div>
-        <div class="chart-sub" style="margin-bottom:10px">The impact of implementing these 6 programs is shown in the Data Analysis Dashboard — Chapter 6: Before vs After.</div>
-        <a href="https://dineshkalcheti.github.io/updateddashboard/#beforeafter" target="_blank" 
-           style="display:inline-block;padding:8px 18px;background:var(--teal);color:#fff;border-radius:5px;font-size:12px;font-weight:600;text-decoration:none">
-          View Before / After Comparison →
-        </a>
+  <div class="page-header" style="margin-top:16px">
+    <div class="page-title">Intervention Programs</div>
+    <div class="page-sub">Six evidence-based programs — click any card to see which youth are currently triggered</div>
+  </div>
+
+  <!-- LIVE PROGRAM SUMMARY CARDS -->
+  <div class="sec-title" id="int-headline" style="margin-bottom:12px">Loading program triggers...</div>
+  <div id="int-program-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px"></div>
+
+  <!-- DETAIL PANEL (shown on click) -->
+  <div id="int-detail" style="display:none;background:var(--surf2);border:1px solid var(--border2);border-radius:12px;padding:20px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap">
+      <div id="int-d-icon" style="font-size:28px"></div>
+      <div style="flex:1;min-width:200px">
+        <div id="int-d-name" style="font-size:15px;font-weight:700;color:var(--t1)"></div>
+        <div id="int-d-trigger" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:3px"></div>
       </div>
+      <div style="text-align:right">
+        <div id="int-d-count" style="font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--teal)"></div>
+        <div style="font-size:10px;color:var(--t3)">youth triggered</div>
+      </div>
+      <button onclick="document.getElementById('int-detail').style.display='none'" style="background:var(--surf3);border:none;color:var(--t2);padding:7px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600">Close ✕</button>
+    </div>
+    <div id="int-d-desc" style="font-size:12.5px;color:var(--t2);line-height:1.65;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)"></div>
+    <!-- 3 KPI stats for this cohort -->
+    <div id="int-d-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px"></div>
+    <!-- Youth table -->
+    <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px" id="int-d-table-label">Top 50 youth sorted by risk score</div>
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px">
+      <table style="width:100%;border-collapse:collapse;font-size:11.5px">
+        <thead><tr id="int-d-head" style="background:var(--surf3)"></tr></thead>
+        <tbody id="int-d-body"></tbody>
+      </table>
     </div>
   </div>
-  <div class="sec-title">The 6 Intervention Programs</div>
-  <div class="int-grid">
-    <div class="int-card" style="border-color:var(--teal)"><h4 style="color:var(--teal)">1. AI Literacy Program</h4><p>Weekly fact-check curriculum teaching youth when and how to verify AI outputs before acting on them.</p><div class="int-trigger">Trigger: ADS &gt; 12 · Verification &lt; 2/day</div></div>
-    <div class="int-card" style="border-color:var(--gold)"><h4 style="color:var(--gold)">2. Fact-Check Challenge</h4><p>Gamified daily exercises requiring youth to cross-reference AI outputs against trusted sources.</p><div class="int-trigger">Trigger: Verification_Frequency &lt; 1.5</div></div>
-    <div class="int-card" style="border-color:var(--blue)"><h4 style="color:var(--blue)">3. Screen Time Guidelines</h4><p>City-recommended 90-minute daily cap for AI screen time for youth under 18, backed by scatter evidence.</p><div class="int-trigger">Trigger: PWRI &gt; 0.25 · Screen &gt; 180 min</div></div>
-    <div class="int-card" style="border-color:var(--coral)"><h4 style="color:var(--coral)">4. AI-Free Decision Zones</h4><p>Designated timed class periods where AI tools are disabled — rebuilds autonomous thinking for the 486 dependent youth.</p><div class="int-trigger">Trigger: DAR &lt; 1.5 · Delay &gt; 90s</div></div>
-    <div class="int-card" style="border-color:var(--purple)"><h4 style="color:var(--purple)">5. Counselor Alert System</h4><p>Monthly dashboard reports flagging Level 4–5 youth for 1-on-1 digital wellness check-ins.</p><div class="int-trigger">Trigger: AI_Reliance_Level ≥ 4</div></div>
-    <div class="int-card" style="border-color:var(--teal)"><h4 style="color:var(--teal)">6. Monthly Progress Tracking</h4><p>Dashboard re-measured monthly. City leadership sees if KPIs improve and adjusts programs accordingly.</p><div class="int-trigger">Trigger: All KPIs — ongoing monitoring</div></div>
-  </div>
+
 </div>
 
 <!-- ── PAGE: ASSESSMENT ────────────────────────────────────────────── -->
@@ -1898,6 +1912,7 @@ const ALL_DATA = RAW_CSV.trim().split('\n').map(line => {
 });
 
 // ── FILTER STATE ──────────────────────────────────────────────────
+enrichData(ALL_DATA);
 let filteredData = [...ALL_DATA];
 
 function getFilters() {
@@ -1947,6 +1962,17 @@ function computeDAR(data) {
   const Del = avg(data, r=>r.delay);
   return +((D * Con) / (1 + Del/60)).toFixed(2);
 }
+// ── ENRICHMENT ────────────────────────────────────────────────────
+function enrichData(data) {
+  return data.map(r => {
+    if (r.risk_score !== undefined) return r;
+    const rs = (r.prompts/100)*0.20 + (1-r.verify/10)*0.25 + (r.decide?0:1)*0.20 + (r.delay/600)*0.10 + (r.eye/3)*0.10 + r.stiffness*0.05 + ((r.reliance-1)/4)*0.10;
+    r.risk_score = Math.round(rs * 1000) / 1000;
+    return r;
+  });
+}
+
+
 
 // ── CHART REGISTRY ────────────────────────────────────────────────
 const CHARTS = {};
@@ -2222,72 +2248,279 @@ PAGE_RENDERERS['risk'] = function() {
 
 // ── INTERVENTIONS ────────────────────────────────────────────────
 PAGE_RENDERERS['interventions'] = function() {
-  // Before/After comparison is in the Data Analysis Dashboard (Chapter 6)
-  // This page shows only the 6 intervention programs and their triggers
+  const d = filteredData;
+  const grid = document.getElementById('int-program-grid');
+  const headline = document.getElementById('int-headline');
+  if (!grid) return;
+
+  // Define 6 programs with trigger logic
+  const programs = [
+    {
+      id: 1, icon: '📚', name: 'AI Literacy Program',
+      color: 'var(--teal)', borderColor: '#00d4aa',
+      desc: 'Weekly school curriculum teaching youth when and how to verify AI outputs before acting on them. Directly targets youth with near-zero verification habits.',
+      trigger: 'ADS > 12 OR Verification < 2/day',
+      test: function(r) {
+        var S = r.screen, P = r.prompts, V = r.verify;
+        var ads = S > 0 ? (P - V) / (S / 60) : 0;
+        return ads > 12 || V < 2;
+      },
+      cols: ['ID', 'Age', 'Tool', 'Reliance', 'Prompts/Day', 'Verify/Day', 'ADS', 'Risk'],
+      rowFn: function(r) {
+        var S = r.screen, P = r.prompts, V = r.verify;
+        var ads = S > 0 ? ((P - V) / (S / 60)).toFixed(1) : '0.0';
+        var riskColor = r.risk === 'H' ? 'var(--coral)' : r.risk === 'M' ? 'var(--gold)' : 'var(--teal)';
+        var riskLabel = r.risk === 'H' ? 'HIGH' : r.risk === 'M' ? 'MED' : 'LOW';
+        return '<td>' + r.id + '</td><td>' + r.age + '</td><td style="font-size:10.5px">' + (TOOL_FULL[r.tool] || r.tool) + '</td><td>L' + r.reliance + '</td><td>' + P + '</td><td style="color:' + (V < 2 ? 'var(--coral)' : 'var(--teal)') + '">' + V + '</td><td style="color:' + (ads > 12 ? 'var(--coral)' : 'var(--t1)') + '">' + ads + '</td><td><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:' + riskColor + '22;color:' + riskColor + '">' + riskLabel + '</span></td>';
+      }
+    },
+    {
+      id: 2, icon: '✅', name: 'Fact-Check Challenge',
+      color: 'var(--gold)', borderColor: '#ffd166',
+      desc: 'Gamified daily exercises requiring youth to cross-reference AI outputs against at least two trusted sources before acting. Targets the 531 youth who verify zero times per day.',
+      trigger: 'Verification_Frequency < 1.5/day',
+      test: function(r) { return r.verify < 1.5; },
+      cols: ['ID', 'Age', 'Tool', 'Reliance', 'Verify/Day', 'Prompts/Day', 'AI Errors/Week', 'Risk'],
+      rowFn: function(r) {
+        var riskColor = r.risk === 'H' ? 'var(--coral)' : r.risk === 'M' ? 'var(--gold)' : 'var(--teal)';
+        var riskLabel = r.risk === 'H' ? 'HIGH' : r.risk === 'M' ? 'MED' : 'LOW';
+        return '<td>' + r.id + '</td><td>' + r.age + '</td><td style="font-size:10.5px">' + (TOOL_FULL[r.tool] || r.tool) + '</td><td>L' + r.reliance + '</td><td style="color:' + (r.verify === 0 ? 'var(--coral)' : 'var(--gold)') + '"><strong>' + r.verify + '</strong></td><td>' + r.prompts + '</td><td>' + r.ai_errors + '</td><td><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:' + riskColor + '22;color:' + riskColor + '">' + riskLabel + '</span></td>';
+      }
+    },
+    {
+      id: 3, icon: '📱', name: 'Screen Time Guidelines',
+      color: 'var(--blue)', borderColor: '#4da6ff',
+      desc: 'City-recommended 90-minute daily cap for AI screen use. Scatter plot evidence confirms all high eye strain cases occur above 200 min/day — giving the city an evidence-based number.',
+      trigger: 'PWRI > 0.25 OR Screen_Time > 180 min',
+      test: function(r) {
+        var pwri = (r.eye / 3 * 0.5) + (r.stiffness * 0.3) + (r.screen / 480 * 0.2);
+        return pwri > 0.25 || r.screen > 180;
+      },
+      cols: ['ID', 'Age', 'Tool', 'Screen (min)', 'Eye Strain', 'Stiffness', 'PWRI', 'Risk'],
+      rowFn: function(r) {
+        var pwri = ((r.eye / 3 * 0.5) + (r.stiffness * 0.3) + (r.screen / 480 * 0.2)).toFixed(3);
+        var eyeLabel = ['None', 'Low', 'Med', 'High'][r.eye] || r.eye;
+        var riskColor = r.risk === 'H' ? 'var(--coral)' : r.risk === 'M' ? 'var(--gold)' : 'var(--teal)';
+        var riskLabel = r.risk === 'H' ? 'HIGH' : r.risk === 'M' ? 'MED' : 'LOW';
+        return '<td>' + r.id + '</td><td>' + r.age + '</td><td style="font-size:10.5px">' + (TOOL_FULL[r.tool] || r.tool) + '</td><td style="color:' + (r.screen > 180 ? 'var(--coral)' : 'var(--t1)') + '">' + r.screen + '</td><td>' + eyeLabel + '</td><td style="color:' + (r.stiffness ? 'var(--coral)' : 'var(--teal)') + '">' + (r.stiffness ? 'Yes' : 'No') + '</td><td style="color:' + (pwri > 0.25 ? 'var(--coral)' : 'var(--t1)') + '">' + pwri + '</td><td><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:' + riskColor + '22;color:' + riskColor + '">' + riskLabel + '</span></td>';
+      }
+    },
+    {
+      id: 4, icon: '🚫', name: 'AI-Free Decision Zones',
+      color: 'var(--coral)', borderColor: '#ff6b6b',
+      desc: 'Designated timed class periods where AI tools are disabled. Rebuilds autonomous thinking for the 486 youth who have confirmed cognitive dependency.',
+      trigger: 'DAR < 1.5 OR Decision_Delay > 90 sec',
+      test: function(r) {
+        var dar = r.decide ? (r.decide * r.confidence) / (1 + r.delay / 60) : 0;
+        return dar < 1.5 || r.delay > 90;
+      },
+      cols: ['ID', 'Age', 'Tool', 'Reliance', 'Delay (s)', 'Confidence', 'Can Decide', 'DAR'],
+      rowFn: function(r) {
+        var dar = r.decide ? ((r.decide * r.confidence) / (1 + r.delay / 60)).toFixed(2) : '0.00';
+        return '<td>' + r.id + '</td><td>' + r.age + '</td><td style="font-size:10.5px">' + (TOOL_FULL[r.tool] || r.tool) + '</td><td>L' + r.reliance + '</td><td style="color:' + (r.delay > 90 ? 'var(--coral)' : 'var(--t1)') + '">' + r.delay + 's</td><td>' + r.confidence + '</td><td style="color:' + (r.decide ? 'var(--teal)' : 'var(--coral)') + '">' + (r.decide ? 'Yes' : 'No') + '</td><td style="color:' + (dar < 1.5 ? 'var(--coral)' : 'var(--teal)') + '">' + dar + '</td>';
+      }
+    },
+    {
+      id: 5, icon: '🚨', name: 'Counselor Alert System',
+      color: 'var(--purple)', borderColor: '#b08eff',
+      desc: 'Monthly dashboard reports flagging Level 4 and 5 youth for 1-on-1 digital wellness check-ins. These youth show severe dependency requiring individualized support.',
+      trigger: 'AI_Reliance_Level >= 4',
+      test: function(r) { return r.reliance >= 4; },
+      cols: ['ID', 'Age', 'Tool', 'Reliance', 'Verify/Day', 'Delay (s)', 'Confidence', 'Risk'],
+      rowFn: function(r) {
+        var lvlColor = r.reliance >= 5 ? '#ff4444' : 'var(--coral)';
+        return '<td>' + r.id + '</td><td>' + r.age + '</td><td style="font-size:10.5px">' + (TOOL_FULL[r.tool] || r.tool) + '</td><td style="color:' + lvlColor + ';font-weight:700">L' + r.reliance + ' ⚠</td><td style="color:' + (r.verify < 2 ? 'var(--coral)' : 'var(--t1)') + '">' + r.verify + '</td><td>' + r.delay + 's</td><td>' + r.confidence + '</td><td><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:var(--coral)22;color:var(--coral)">ALERT</span></td>';
+      }
+    },
+    {
+      id: 6, icon: '📊', name: 'Monthly Progress Tracking',
+      color: 'var(--teal)', borderColor: '#00d4aa',
+      desc: 'All three KPI scores remeasured monthly. City leadership reviews whether ADS, PWRI, and DAR are improving and adjusts program intensity accordingly. All youth are continuously monitored.',
+      trigger: 'All youth — continuous monitoring',
+      test: function(r) { return true; },
+      cols: ['ID', 'Age', 'Tool', 'Reliance', 'ADS', 'PWRI', 'DAR', 'Risk'],
+      rowFn: function(r) {
+        var ads = r.screen > 0 ? ((r.prompts - r.verify) / (r.screen / 60)).toFixed(1) : '0.0';
+        var pwri = ((r.eye / 3 * 0.5) + (r.stiffness * 0.3) + (r.screen / 480 * 0.2)).toFixed(3);
+        var dar = r.decide ? ((r.decide * r.confidence) / (1 + r.delay / 60)).toFixed(2) : '0.00';
+        var riskColor = r.risk === 'H' ? 'var(--coral)' : r.risk === 'M' ? 'var(--gold)' : 'var(--teal)';
+        var riskLabel = r.risk === 'H' ? 'HIGH' : r.risk === 'M' ? 'MED' : 'LOW';
+        return '<td>' + r.id + '</td><td>' + r.age + '</td><td style="font-size:10.5px">' + (TOOL_FULL[r.tool] || r.tool) + '</td><td>L' + r.reliance + '</td><td style="color:' + (ads > 12 ? 'var(--coral)' : 'var(--t1)') + '">' + ads + '</td><td style="color:' + (pwri > 0.25 ? 'var(--gold)' : 'var(--t1)') + '">' + pwri + '</td><td style="color:' + (dar < 1.5 ? 'var(--coral)' : 'var(--teal)') + '">' + dar + '</td><td><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:' + riskColor + '22;color:' + riskColor + '">' + riskLabel + '</span></td>';
+      }
+    }
+  ];
+
+  // Count triggered youth per program
+  var allTriggered = new Set();
+  programs.forEach(function(prog) {
+    d.filter(prog.test).forEach(function(r) { allTriggered.add(r.id); });
+  });
+
+  headline.textContent = allTriggered.size.toLocaleString() + ' of ' + d.length.toLocaleString() + ' youth qualify for at least one program — click a card to view the youth list';
+
+  // Render program cards
+  grid.innerHTML = programs.map(function(prog) {
+    var triggered = d.filter(prog.test);
+    var count = triggered.length;
+    var pct = d.length ? (count / d.length * 100).toFixed(1) : '0.0';
+    var urgency = count > 400 ? '🔴' : count > 100 ? '🟡' : '🟢';
+    return '<div onclick="showIntDetail(' + prog.id + ')" style="background:var(--surf2);border:1px solid var(--border);border-left:4px solid ' + prog.borderColor + ';border-radius:10px;padding:18px;cursor:pointer;transition:all .15s" onmouseover="this.style.background=\'var(--surf3)\'" onmouseout="this.style.background=\'var(--surf2)\'">'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+      + '<span style="font-size:22px">' + prog.icon + '</span>'
+      + '<div style="flex:1;font-size:12px;font-weight:700;color:var(--t1)">' + prog.name + '</div>'
+      + '<span style="font-size:15px">' + urgency + '</span>'
+      + '</div>'
+      + '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px">'
+      + '<span style="font-family:\'JetBrains Mono\',monospace;font-size:30px;font-weight:700;color:' + prog.color + '">' + count.toLocaleString() + '</span>'
+      + '<span style="font-size:11px;color:var(--t3)">youth &nbsp;(' + pct + '%)</span>'
+      + '</div>'
+      + '<div style="height:4px;background:var(--surf);border-radius:2px;overflow:hidden;margin-bottom:10px">'
+      + '<div style="height:100%;width:' + Math.min(100, parseFloat(pct)) + '%;background:' + prog.color + ';border-radius:2px"></div>'
+      + '</div>'
+      + '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9.5px;color:var(--t3);background:var(--surf);padding:5px 8px;border-radius:4px;margin-bottom:10px">' + prog.trigger + '</div>'
+      + '<div style="font-size:11px;color:var(--blue);font-weight:600">View youth list →</div>'
+      + '</div>';
+  }).join('');
+
+  // Store programs globally so showIntDetail can access them
+  window._intPrograms = programs;
+  window._intData = d;
 };
 
+function showIntDetail(progId) {
+  var programs = window._intPrograms;
+  var d = window._intData || filteredData;
+  if (!programs) return;
+  var prog = programs.find(function(p) { return p.id === progId; });
+  if (!prog) return;
+
+  var triggered = d.filter(prog.test).sort(function(a, b) { return b.risk_score - a.risk_score; }).slice(0, 50);
+
+  document.getElementById('int-d-icon').textContent = prog.icon;
+  document.getElementById('int-d-name').textContent = prog.name;
+  document.getElementById('int-d-trigger').textContent = 'Trigger: ' + prog.trigger;
+  document.getElementById('int-d-count').textContent = d.filter(prog.test).length.toLocaleString();
+  document.getElementById('int-d-desc').textContent = prog.desc;
+  document.getElementById('int-d-table-label').textContent = 'Showing top ' + Math.min(50, triggered.length) + ' youth (sorted by risk score descending)';
+
+  // KPI stats for triggered cohort
+  var kpiStats = [
+    { label: 'Avg ADS', val: computeADS(triggered).toFixed(2), color: 'var(--teal)' },
+    { label: 'Avg PWRI', val: computePWRI(triggered).toFixed(3), color: 'var(--gold)' },
+    { label: 'Avg DAR', val: computeDAR(triggered).toFixed(2), color: 'var(--coral)' }
+  ];
+  document.getElementById('int-d-kpis').innerHTML = kpiStats.map(function(k) {
+    return '<div style="background:var(--surf);padding:14px;border-radius:8px;text-align:center">'
+      + '<div style="font-family:\'JetBrains Mono\',monospace;font-size:24px;font-weight:700;color:' + k.color + '">' + k.val + '</div>'
+      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">' + k.label + '</div>'
+      + '</div>';
+  }).join('');
+
+  // Table
+  document.getElementById('int-d-head').innerHTML = prog.cols.map(function(c) {
+    return '<th style="padding:9px 12px;text-align:left;font-size:9.5px;color:var(--t2);letter-spacing:.5px;font-weight:600;border-bottom:1px solid var(--border)">' + c + '</th>';
+  }).join('');
+
+  document.getElementById('int-d-body').innerHTML = triggered.map(function(r, i) {
+    return '<tr style="' + (i % 2 === 1 ? 'background:var(--surf2)' : '') + '">' + prog.rowFn(r) + '</tr>';
+  }).join('');
+
+  // Apply td padding via inline style on each td
+  var tds = document.querySelectorAll('#int-d-body td');
+  tds.forEach(function(td) {
+    td.style.padding = '8px 12px';
+    td.style.borderBottom = '1px solid var(--border)';
+  });
+
+  var panel = document.getElementById('int-detail');
+  panel.style.display = 'block';
+  setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+}
+
+
 // ── ASSESSMENT ───────────────────────────────────────────────────
+PAGE_RENDERERS['assessment'] = function() {
+  updateAssessment();
+};
+
 function updateAssessment() {
-  const P  = +document.getElementById('a-prompts').value;
-  const V  = +document.getElementById('a-verify').value;
-  const S  = +document.getElementById('a-screen').value;
-  const R  = +document.getElementById('a-reliance').value;
-  const Del= +document.getElementById('a-delay').value;
-  const C2 = +document.getElementById('a-conf').value;
-  const E  = +document.getElementById('a-eye').value;
-  const D  = +document.getElementById('a-decide').value;
-  const St = +document.getElementById('a-stiff').value;
-  // Update labels
+  var P   = +document.getElementById('a-prompts').value;
+  var V   = +document.getElementById('a-verify').value;
+  var S   = +document.getElementById('a-screen').value;
+  var R   = +document.getElementById('a-reliance').value;
+  var Del = +document.getElementById('a-delay').value;
+  var C2  = +document.getElementById('a-conf').value;
+  var E   = +document.getElementById('a-eye').value;
+  var D   = +document.getElementById('a-decide').value;
+  var St  = +document.getElementById('a-stiff').value;
+
+  // Update slider labels
+  var eyeLabels = ['0 (None)','1 (Low)','2 (Medium)','3 (High)'];
+  var relLabels = ['','Low','Low-Med','Medium','Med-High','High'];
   document.getElementById('a-prompts-val').textContent = P;
-  document.getElementById('a-verify-val').textContent = V;
-  document.getElementById('a-screen-val').textContent = S;
-  document.getElementById('a-reliance-val').textContent = ['','Low','Low-Med','Medium','Med-High','High'][R];
-  document.getElementById('a-delay-val').textContent = Del+'s';
-  document.getElementById('a-conf-val').textContent = C2;
-  document.getElementById('a-eye-val').textContent = E+' ('+EYE_LBL[E]+')';
+  document.getElementById('a-verify-val').textContent  = V;
+  document.getElementById('a-screen-val').textContent  = S + ' min';
+  document.getElementById('a-reliance-val').textContent= R + ' — ' + (relLabels[R]||'');
+  document.getElementById('a-delay-val').textContent   = Del + 's';
+  document.getElementById('a-conf-val').textContent    = C2;
+  document.getElementById('a-eye-val').textContent     = eyeLabels[E] || E;
+
   // Compute KPIs
-  const ads  = S>0 ? +((P-V)/(S/60)).toFixed(2) : 0;
-  const pwri = +((E/3*0.5)+(St*0.3)+(S/480*0.2)).toFixed(3);
-  const dar  = +((D*C2)/(1+Del/60)).toFixed(2);
+  var ads  = S > 0 ? +((P - V) / (S / 60)).toFixed(2) : 0;
+  var pwri = +((E/3*0.5) + (St*0.3) + (S/480*0.2)).toFixed(3);
+  var dar  = D > 0 ? +((D * C2) / (1 + Del/60)).toFixed(2) : 0;
+
   // Risk score
-  const rs = (P/100)*0.20 + (1-V/10)*0.25 + (D?0:1)*0.20 + (Del/600)*0.10 + (E/3)*0.10 + St*0.05 + ((R-1)/4)*0.10;
-  const riskLabel = rs>=0.65?'HIGH RISK':rs>=0.40?'MEDIUM RISK':'LOW RISK';
-  const riskColor = rs>=0.65?'var(--coral)':rs>=0.40?'var(--gold)':'var(--teal)';
-  document.getElementById('a-risk-label').textContent = riskLabel;
-  document.getElementById('a-risk-label').style.color = riskColor;
-  document.getElementById('a-risk-score').textContent = rs.toFixed(2);
-  document.getElementById('a-risk-score').style.color = riskColor;
+  var rs = (P/100)*0.20 + (1-V/10)*0.25 + (D?0:1)*0.20 + (Del/600)*0.10 + (E/3)*0.10 + St*0.05 + ((R-1)/4)*0.10;
+  rs = Math.min(1, Math.max(0, rs));
+  var riskLabel = rs >= 0.65 ? 'HIGH RISK' : rs >= 0.40 ? 'MEDIUM RISK' : 'LOW RISK';
+  var riskColor = rs >= 0.65 ? 'var(--coral)' : rs >= 0.40 ? 'var(--gold)' : 'var(--teal)';
+
+  var rl = document.getElementById('a-risk-label');
+  var rs2= document.getElementById('a-risk-score');
+  if (rl) { rl.textContent = riskLabel; rl.style.color = riskColor; }
+  if (rs2){ rs2.textContent = rs.toFixed(2); rs2.style.color = riskColor; }
+
   // KPI display
-  document.getElementById('a-kpis').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-      <div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">
-        <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">ADS</div>
-        <div style="font-size:22px;font-weight:700;color:${ads<8?'var(--teal)':'var(--coral)'};font-family:monospace">${ads}</div>
-        <div style="font-size:9px;color:var(--t3)">target &lt; 8.0</div>
-      </div>
-      <div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">
-        <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">PWRI</div>
-        <div style="font-size:22px;font-weight:700;color:${pwri<0.15?'var(--teal)':'var(--coral)'};font-family:monospace">${pwri}</div>
-        <div style="font-size:9px;color:var(--t3)">target &lt; 0.15</div>
-      </div>
-      <div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">
-        <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">DAR</div>
-        <div style="font-size:22px;font-weight:700;color:${dar>3?'var(--teal)':'var(--coral)'};font-family:monospace">${dar}</div>
-        <div style="font-size:9px;color:var(--t3)">target &gt; 3.0</div>
-      </div>
-    </div>`;
+  var kpiEl = document.getElementById('a-kpis');
+  if (kpiEl) {
+    kpiEl.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'
+      + '<div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">'
+      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">ADS</div>'
+      + '<div style="font-size:22px;font-weight:700;color:' + (ads<8?'var(--teal)':'var(--coral)') + ';font-family:monospace">' + ads + '</div>'
+      + '<div style="font-size:9px;color:var(--t3)">target &lt; 8.0</div>'
+      + '</div>'
+      + '<div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">'
+      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">PWRI</div>'
+      + '<div style="font-size:22px;font-weight:700;color:' + (pwri<0.15?'var(--teal)':'var(--coral)') + ';font-family:monospace">' + pwri + '</div>'
+      + '<div style="font-size:9px;color:var(--t3)">target &lt; 0.15</div>'
+      + '</div>'
+      + '<div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">'
+      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">DAR</div>'
+      + '<div style="font-size:22px;font-weight:700;color:' + (dar>3?'var(--teal)':'var(--coral)') + ';font-family:monospace">' + dar + '</div>'
+      + '<div style="font-size:9px;color:var(--t3)">target &gt; 3.0</div>'
+      + '</div>'
+      + '</div>';
+  }
+
   // Triggered programs
-  const progs = [];
-  if (ads>12||V<2)    progs.push({n:'AI Literacy Program',c:'var(--teal)'});
-  if (V<1.5)          progs.push({n:'Fact-Check Challenge',c:'var(--gold)'});
-  if (pwri>0.25||S>180) progs.push({n:'Screen Time Guidelines',c:'var(--blue)'});
-  if (dar<1.5||Del>90)  progs.push({n:'AI-Free Decision Zones',c:'var(--coral)'});
-  if (R>=4)           progs.push({n:'Counselor Alert System',c:'var(--purple)'});
-  document.getElementById('a-programs').innerHTML = `
-    <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:1px">Triggered Programs (${progs.length})</div>
-    ${progs.length?progs.map(p=>`<div style="padding:8px 12px;border-radius:6px;border-left:3px solid ${p.c};background:var(--surf2);font-size:12px;font-weight:500">${p.n}</div>`).join('')
-    :'<div style="font-size:12px;color:var(--teal);padding:10px;background:var(--tl);border-radius:6px">✓ No interventions triggered — within healthy parameters</div>'}
-    <div style="font-size:10px;color:var(--t3);margin-top:8px">* Algorithmic output only — not a clinical assessment</div>`;
+  var progs = [];
+  if (ads > 12 || V < 2)      progs.push({n:'AI Literacy Program', c:'var(--teal)'});
+  if (V < 1.5)                 progs.push({n:'Fact-Check Challenge', c:'var(--gold)'});
+  if (pwri > 0.25 || S > 180)  progs.push({n:'Screen Time Guidelines', c:'var(--blue)'});
+  if (dar < 1.5 || Del > 90)   progs.push({n:'AI-Free Decision Zones', c:'var(--coral)'});
+  if (R >= 4)                   progs.push({n:'Counselor Alert System', c:'var(--purple)'});
+
+  var progEl = document.getElementById('a-programs');
+  if (progEl) {
+    progEl.innerHTML =
+      '<div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Triggered Programs (' + progs.length + ')</div>'
+      + (progs.length
+        ? progs.map(function(p){ return '<div style="padding:8px 12px;border-radius:6px;border-left:3px solid ' + p.c + ';background:var(--surf2);font-size:12px;font-weight:500;margin-bottom:6px">' + p.n + '</div>'; }).join('')
+        : '<div style="font-size:12px;color:var(--teal);padding:10px;background:var(--tl);border-radius:6px">✓ No programs triggered — within healthy parameters</div>')
+      + '<div style="font-size:10px;color:var(--t3);margin-top:8px">* Algorithmic output only — not a clinical assessment</div>';
+  }
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────
