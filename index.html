@@ -115,6 +115,44 @@ tr:hover td{background:var(--surf2)}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--surf)}
 ::-webkit-scrollbar-thumb{background:var(--surf3);border-radius:3px}
+
+/* Assessment tiles */
+.as-tile{border:1px solid var(--border2);border-radius:9px;padding:11px 8px;cursor:pointer;text-align:center;transition:all .15s;background:var(--surf2);font-size:20px;line-height:1.3;user-select:none}
+.as-tile span{display:block;font-size:11px;font-weight:700;color:var(--t1);margin-top:5px}
+.as-tile small{display:block;font-size:9.5px;color:var(--t3)}
+.as-tile:hover{border-color:var(--teal);transform:translateY(-2px)}
+.as-tile.at{border-color:var(--teal);background:rgba(0,212,170,.12)} .as-tile.at span{color:var(--teal)}
+.as-tile.aw{border-color:var(--gold);background:rgba(255,209,102,.1)}  .as-tile.aw span{color:var(--gold)}
+.as-tile.ad{border-color:var(--coral);background:rgba(255,107,107,.1)} .as-tile.ad span{color:var(--coral)}
+.as-tile.ax{border-color:var(--blue);background:rgba(77,166,255,.1)}   .as-tile.ax span{color:var(--blue)}
+/* Assessment rows */
+.as-row{border:1px solid var(--border2);border-radius:8px;padding:10px 13px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:7px;transition:all .15s;background:var(--surf2);user-select:none}
+.as-row:last-child{margin:0}
+.as-row:hover{border-color:var(--teal)}
+.as-row.at{border-color:var(--teal);background:rgba(0,212,170,.08)}
+.as-row.aw{border-color:var(--gold);background:rgba(255,209,102,.08)}
+.as-row.ad{border-color:var(--coral);background:rgba(255,107,107,.08)}
+.as-dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--t3);flex-shrink:0;position:relative;transition:all .15s}
+.as-row.at .as-dot{background:var(--teal);border-color:var(--teal)}
+.as-row.aw .as-dot{background:var(--gold);border-color:var(--gold)}
+.as-row.ad .as-dot{background:var(--coral);border-color:var(--coral)}
+.as-row.at .as-dot::after,.as-row.aw .as-dot::after,.as-row.ad .as-dot::after{content:"";width:5px;height:5px;background:#fff;border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.as-re{font-size:17px;flex-shrink:0}
+.as-rt{font-size:12px;font-weight:600;color:var(--t1)}
+.as-row.at .as-rt{color:var(--teal)} .as-row.aw .as-rt{color:var(--gold)} .as-row.ad .as-rt{color:var(--coral)}
+.as-rd{font-size:10px;color:var(--t3)}
+.as-btn-next{background:var(--teal);color:var(--bg);border:none;padding:9px 20px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.as-btn-back{background:var(--surf2);color:var(--t2);border:none;padding:9px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit}
+.as-btn-submit{background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;border:none;padding:10px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+/* Screen time manager */
+.st-filter-btn{background:var(--surf2);color:var(--t2);border:1px solid var(--border);padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
+.st-filter-btn:hover{border-color:var(--teal);color:var(--teal)}
+.st-filter-btn.active{background:rgba(0,212,170,.15);border-color:var(--teal);color:var(--teal);font-weight:700}
+.st-bar-wrap{width:90px;height:5px;background:var(--surf3);border-radius:3px;display:inline-block;vertical-align:middle;margin-right:6px}
+.st-bar{height:100%;border-radius:3px}
+.st-sel{background:var(--surf2);border:1px solid var(--border2);color:var(--t1);padding:4px 8px;border-radius:5px;font-size:10.5px;font-family:inherit;cursor:pointer;outline:none;min-width:120px}
+.st-sel.assigned{border-color:var(--teal);color:var(--teal)}
+
 </style>
 </head>
 <body>
@@ -135,6 +173,7 @@ tr:hover td{background:var(--surf2)}
       <button class="nav-item" onclick="showPage('risk')"><span class="nav-icon">⚠️</span>Risk Profiles</button>
       <button class="nav-item" onclick="showPage('interventions')"><span class="nav-icon">🎯</span>Interventions</button>
       <button class="nav-item" onclick="showPage('assessment')"><span class="nav-icon">👤</span>Youth Assessment</button>
+      <button class="nav-item" onclick="showPage('screentime')"><span class="nav-icon">📱</span>Screen Time Manager</button>
     </div>
     <div class="nav-group">
       <div class="nav-label">Project</div>
@@ -316,73 +355,265 @@ tr:hover td{background:var(--surf2)}
 
 <!-- ── PAGE: ASSESSMENT ────────────────────────────────────────────── -->
 <div class="page" id="page-assessment">
-  <div class="page-header" style="margin-top:16px"><div class="page-title">Youth Assessment Tool</div><div class="page-sub">Individual risk calculator — enter a youth's data to generate an algorithmic risk score and intervention recommendations</div></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-    <div>
-      <div class="chart-card" style="margin-bottom:14px">
-        <div class="chart-title">AI Usage</div>
-        <div style="display:grid;gap:10px;margin-top:12px">
-          <label style="font-size:12px;color:var(--t2)">AI Prompts Created / Day (0–100)<input id="a-prompts" type="range" min="0" max="100" value="38" oninput="updateAssessment()" style="width:100%;margin-top:4px;accent-color:var(--teal)"><span id="a-prompts-val" style="color:var(--teal);font-family:monospace">38</span></label>
-          <label style="font-size:12px;color:var(--t2)">Verification Frequency (0–10)<input id="a-verify" type="range" min="0" max="10" value="1" oninput="updateAssessment()" step="0.5" style="width:100%;margin-top:4px;accent-color:var(--gold)"><span id="a-verify-val" style="color:var(--gold);font-family:monospace">1</span></label>
-          <label style="font-size:12px;color:var(--t2)">Screen Time / Day (min)<input id="a-screen" type="range" min="0" max="480" value="154" oninput="updateAssessment()" style="width:100%;margin-top:4px;accent-color:var(--blue)"><span id="a-screen-val" style="color:var(--blue);font-family:monospace">154</span></label>
-          <label style="font-size:12px;color:var(--t2)">AI Reliance Level (1–5)<input id="a-reliance" type="range" min="1" max="5" value="2" oninput="updateAssessment()" style="width:100%;margin-top:4px;accent-color:var(--purple)"><span id="a-reliance-val" style="color:var(--purple);font-family:monospace">2</span></label>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Behavioral & Physical</div>
-        <div style="display:grid;gap:10px;margin-top:12px">
-          <label style="font-size:12px;color:var(--t2)">Decision Delay Without AI (sec)<input id="a-delay" type="range" min="0" max="600" value="86" oninput="updateAssessment()" style="width:100%;margin-top:4px;accent-color:var(--coral)"><span id="a-delay-val" style="color:var(--coral);font-family:monospace">86</span></label>
-          <label style="font-size:12px;color:var(--t2)">Decision Confidence Without AI (1–5)<input id="a-conf" type="range" min="1" max="5" value="3.5" step="0.5" oninput="updateAssessment()" style="width:100%;margin-top:4px;accent-color:var(--teal)"><span id="a-conf-val" style="color:var(--teal);font-family:monospace">3.5</span></label>
-          <label style="font-size:12px;color:var(--t2)">Eye Strain Level (0=None, 1=Low, 2=Med, 3=High)<input id="a-eye" type="range" min="0" max="3" value="1" step="1" oninput="updateAssessment()" style="width:100%;margin-top:4px;accent-color:var(--gold)"><span id="a-eye-val" style="color:var(--gold);font-family:monospace">1 (Low)</span></label>
-          <label style="font-size:12px;color:var(--t2)">Can Decide Without AI?<select id="a-decide" onchange="updateAssessment()" style="width:100%;margin-top:6px;background:var(--surf2);border:1px solid var(--border2);color:var(--t1);padding:6px;border-radius:5px;font-size:12px"><option value="1">Yes</option><option value="0">No</option></select></label>
-          <label style="font-size:12px;color:var(--t2)">Physical Stiffness?<select id="a-stiff" onchange="updateAssessment()" style="width:100%;margin-top:6px;background:var(--surf2);border:1px solid var(--border2);color:var(--t1);padding:6px;border-radius:5px;font-size:12px"><option value="0">No</option><option value="1">Yes</option></select></label>
-        </div>
+  <div class="page-header" style="margin-top:16px">
+    <div class="page-title">Youth Assessment Tool</div>
+    <div class="page-sub">Answer each section and generate an algorithmic risk score with program recommendations</div>
+  </div>
+
+  <!-- MINI PROGRESS -->
+  <div class="chart-card" style="margin-bottom:16px;padding:16px 20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-size:11px;font-weight:600;color:var(--teal)" id="ap-step">Section 1 of 4 — AI Usage</div>
+      <div style="font-size:11px;color:var(--t3)" id="ap-pct">25%</div>
+    </div>
+    <div style="height:4px;background:var(--surf2);border-radius:2px;overflow:hidden;margin-bottom:10px">
+      <div style="height:100%;background:linear-gradient(90deg,var(--teal),var(--blue));border-radius:2px;transition:width .5s" id="ap-fill" style="width:25%"></div>
+    </div>
+    <div style="display:flex;gap:0">
+      <div style="flex:1;text-align:center"><div style="width:9px;height:9px;border-radius:50%;margin:0 auto 3px;transition:all .3s;background:var(--teal)" id="apd1"></div><div style="font-size:9px;color:var(--t3)">AI Usage</div></div>
+      <div style="flex:1;text-align:center"><div style="width:9px;height:9px;border-radius:50%;margin:0 auto 3px;transition:all .3s;background:var(--surf3)" id="apd2"></div><div style="font-size:9px;color:var(--t3)">Decisions</div></div>
+      <div style="flex:1;text-align:center"><div style="width:9px;height:9px;border-radius:50%;margin:0 auto 3px;transition:all .3s;background:var(--surf3)" id="apd3"></div><div style="font-size:9px;color:var(--t3)">Wellness</div></div>
+      <div style="flex:1;text-align:center"><div style="width:9px;height:9px;border-radius:50%;margin:0 auto 3px;transition:all .3s;background:var(--surf3)" id="apd4"></div><div style="font-size:9px;color:var(--t3)">Background</div></div>
+    </div>
+  </div>
+
+  <!-- SEC 1 -->
+  <div id="ap-s1">
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:3px">How many times does this youth use AI per day?</div>
+      <div class="chart-sub" style="margin-bottom:12px">Count all tools — chatbots, voice assistants, social media AI</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="ag-prompts">
+        <div class="as-tile" onclick="apick('prompts','5',this,'t')">🌱<br><span>1–5</span><small>Rarely</small></div>
+        <div class="as-tile" onclick="apick('prompts','20',this,'t')">📖<br><span>6–30</span><small>Occasional</small></div>
+        <div class="as-tile" onclick="apick('prompts','45',this,'w')">💻<br><span>30–60</span><small>Heavy</small></div>
+        <div class="as-tile" onclick="apick('prompts','72',this,'w')">⚡<br><span>60–80</span><small>Very heavy</small></div>
+        <div class="as-tile" onclick="apick('prompts','90',this,'d')">🚨<br><span>80+</span><small>All day</small></div>
       </div>
     </div>
-    <div class="chart-card" id="assessment-result" style="display:flex;flex-direction:column;gap:16px">
-      <div class="chart-title">⚡ Risk Assessment Result</div>
-      <div style="text-align:center;padding:20px 0">
-        <div id="a-risk-label" style="font-size:28px;font-weight:700;color:var(--gold)">MEDIUM RISK</div>
-        <div id="a-risk-score" style="font-size:48px;font-weight:700;font-family:monospace;color:var(--gold);margin:8px 0">0.42</div>
-        <div style="font-size:11px;color:var(--t3)">algorithmic score (not a clinical assessment)</div>
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:3px">Does this youth check AI answers before acting?</div>
+      <div class="chart-sub" style="margin-bottom:12px">e.g. searching another source, asking someone</div>
+      <div id="ag-verify">
+        <div class="as-row" onclick="apickR('verify','9',this,'t')"><div class="as-dot"></div><div class="as-re">✅</div><div><div class="as-rt">Always checks</div><div class="as-rd">Consistently verifies AI answers</div></div></div>
+        <div class="as-row" onclick="apickR('verify','6',this,'t')"><div class="as-dot"></div><div class="as-re">🔍</div><div><div class="as-rt">Usually checks</div><div class="as-rd">Checks most of the time</div></div></div>
+        <div class="as-row" onclick="apickR('verify','3',this,'w')"><div class="as-dot"></div><div class="as-re">🤷</div><div><div class="as-rt">Sometimes — only when unsure</div><div class="as-rd">Occasionally cross-references</div></div></div>
+        <div class="as-row" onclick="apickR('verify','1',this,'w')"><div class="as-dot"></div><div class="as-re">⚠️</div><div><div class="as-rt">Rarely checks</div><div class="as-rd">Almost always trusts AI directly</div></div></div>
+        <div class="as-row" onclick="apickR('verify','0',this,'d')"><div class="as-dot"></div><div class="as-re">❌</div><div><div class="as-rt">Never — accepts everything AI says</div><div class="as-rd">Zero verification behavior</div></div></div>
       </div>
-      <div id="a-kpis" style="display:grid;gap:8px"></div>
-      <div id="a-programs" style="display:grid;gap:8px">
-        <div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:1px">Triggered Programs</div>
+    </div>
+    <div class="chart-card" style="margin-bottom:14px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Which AI tool does this youth rely on most?</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="ag-tool">
+        <div class="as-tile" onclick="apick('tool','chatbot',this)">💬<br><span>Chatbot</span><small>ChatGPT</small></div>
+        <div class="as-tile" onclick="apick('tool','voice',this)">🎙️<br><span>Voice AI</span><small>Siri, Alexa</small></div>
+        <div class="as-tile" onclick="apick('tool','nav',this)">🗺️<br><span>Navigation</span><small>Maps</small></div>
+        <div class="as-tile" onclick="apick('tool','edu',this)">📚<br><span>Educational</span><small>AI tutors</small></div>
+        <div class="as-tile" onclick="apick('tool','rec',this)">📱<br><span>Recommendation</span><small>TikTok</small></div>
       </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="as-btn-next" onclick="aNext(1)">Continue →</button>
+      <span style="font-size:11px;color:var(--t3)">Section 1 of 4</span>
+      <span style="font-size:11px;color:var(--coral);display:none" id="aerr1">Please answer all questions.</span>
+    </div>
+  </div>
+
+  <!-- SEC 2 -->
+  <div id="ap-s2" style="display:none">
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Can this youth make everyday decisions without AI?</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="ag-decide">
+        <div class="as-tile" onclick="apick('decide','yes',this,'t')">✅<br><span>Yes</span><small>Independently</small></div>
+        <div class="as-tile" onclick="apick('decide','sometimes',this,'w')">😐<br><span>Sometimes</span><small>Hesitates</small></div>
+        <div class="as-tile" onclick="apick('decide','no',this,'d')">❌<br><span>Cannot decide</span><small>Freezes</small></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:3px">How long to decide without AI?</div>
+      <div class="chart-sub" style="margin-bottom:12px">Based on observation</div>
+      <div id="ag-delay">
+        <div class="as-row" onclick="apickR('delay','15',this,'t')"><div class="as-dot"></div><div class="as-re">⚡</div><div><div class="as-rt">Under 30 seconds</div><div class="as-rd">No hesitation noticed</div></div></div>
+        <div class="as-row" onclick="apickR('delay','60',this,'t')"><div class="as-dot"></div><div class="as-re">🕐</div><div><div class="as-rt">30 to 90 seconds</div><div class="as-rd">Takes a moment but manages</div></div></div>
+        <div class="as-row" onclick="apickR('delay','150',this,'w')"><div class="as-dot"></div><div class="as-re">⏳</div><div><div class="as-rt">1 to 3 minutes — struggles</div><div class="as-rd">Keeps second-guessing</div></div></div>
+        <div class="as-row" onclick="apickR('delay','280',this,'w')"><div class="as-dot"></div><div class="as-re">😟</div><div><div class="as-rt">3 to 5 minutes — significant difficulty</div><div class="as-rd">Needs active prompting</div></div></div>
+        <div class="as-row" onclick="apickR('delay','420',this,'d')"><div class="as-dot"></div><div class="as-re">🚨</div><div><div class="as-rt">Over 5 minutes — or refuses</div><div class="as-rd">Cannot function without AI</div></div></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:14px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">How does this youth feel when asked to work without AI?</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="ag-conf">
+        <div class="as-tile" onclick="apick('conf','5.0',this,'t')">😊<br><span>Confident</span><small>Calm, capable</small></div>
+        <div class="as-tile" onclick="apick('conf','3.5',this,'t')">😌<br><span>Mostly okay</span><small>Prefers AI</small></div>
+        <div class="as-tile" onclick="apick('conf','2.0',this,'w')">😬<br><span>Uncomfortable</span><small>Nervous</small></div>
+        <div class="as-tile" onclick="apick('conf','1.0',this,'d')">😰<br><span>Anxious</span><small>Shuts down</small></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="as-btn-back" onclick="aGoS(1)">← Back</button>
+      <button class="as-btn-next" onclick="aNext(2)">Continue →</button>
+      <span style="font-size:11px;color:var(--t3)">Section 2 of 4</span>
+      <span style="font-size:11px;color:var(--coral);display:none" id="aerr2">Please answer all questions.</span>
+    </div>
+  </div>
+
+  <!-- SEC 3 -->
+  <div id="ap-s3" style="display:none">
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Daily AI-related screen time?</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="ag-screen">
+        <div class="as-tile" onclick="apick('screen','45',this,'t')">🟢<br><span>Under 1 hr</span><small>Safe</small></div>
+        <div class="as-tile" onclick="apick('screen','90',this,'t')">🟡<br><span>1–2 hrs</span><small>Near limit</small></div>
+        <div class="as-tile" onclick="apick('screen','154',this,'w')">🟠<br><span>2–3 hrs</span><small>Exceeds</small></div>
+        <div class="as-tile" onclick="apick('screen','240',this,'w')">🔴<br><span>3–5 hrs</span><small>High risk</small></div>
+        <div class="as-tile" onclick="apick('screen','390',this,'d')">🚨<br><span>5+ hrs</span><small>Critical</small></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Eye discomfort after screen use?</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="ag-eye">
+        <div class="as-tile" onclick="apick('eye','0',this,'t')">👁️✅<br><span>None</span><small>No pain</small></div>
+        <div class="as-tile" onclick="apick('eye','1',this,'t')">👁️🟡<br><span>Mild</span><small>Tired eyes</small></div>
+        <div class="as-tile" onclick="apick('eye','2',this,'w')">👁️🟠<br><span>Moderate</span><small>Regular ache</small></div>
+        <div class="as-tile" onclick="apick('eye','3',this,'d')">👁️🔴<br><span>Severe</span><small>Pain or blur</small></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:14px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Body stiffness or neck/back pain?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="ag-stiff">
+        <div class="as-tile" onclick="apick('stiff','0',this,'t')">🙆<br><span>No pain</span><small>No discomfort</small></div>
+        <div class="as-tile" onclick="apick('stiff','1',this,'d')">😣<br><span>Yes — stiffness</span><small>Neck/back pain</small></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="as-btn-back" onclick="aGoS(2)">← Back</button>
+      <button class="as-btn-next" onclick="aNext(3)">Continue →</button>
+      <span style="font-size:11px;color:var(--t3)">Section 3 of 4</span>
+      <span style="font-size:11px;color:var(--coral);display:none" id="aerr3">Please answer all questions.</span>
+    </div>
+  </div>
+
+  <!-- SEC 4 -->
+  <div id="ap-s4" style="display:none">
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Student age group</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="ag-age">
+        <div class="as-tile" onclick="apick('age','14',this)">🎒<br><span>13–15</span><small>Middle school</small></div>
+        <div class="as-tile" onclick="apick('age','17',this)">📗<br><span>16–18</span><small>High school</small></div>
+        <div class="as-tile" onclick="apick('age','20',this)">🎓<br><span>19–21</span><small>Early college</small></div>
+        <div class="as-tile" onclick="apick('age','23',this)">💼<br><span>22–24</span><small>Late college</small></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:12px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Overall AI dependency level (your observation)</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="ag-reliance">
+        <div class="as-tile" onclick="apick('reliance','1',this,'t')">🌿<br><span>Level 1</span><small>Healthy</small></div>
+        <div class="as-tile" onclick="apick('reliance','2',this,'t')">📊<br><span>Level 2</span><small>Low</small></div>
+        <div class="as-tile" onclick="apick('reliance','3',this,'w')">⚠️<br><span>Level 3</span><small>Noticeable</small></div>
+        <div class="as-tile" onclick="apick('reliance','4',this,'w')">🚩<br><span>Level 4</span><small>High</small></div>
+        <div class="as-tile" onclick="apick('reliance','5',this,'d')">🚨<br><span>Level 5</span><small>Severe</small></div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:14px;padding:18px">
+      <div class="chart-title" style="margin-bottom:12px">Has performance or behavior changed recently?</div>
+      <div id="ag-perf">
+        <div class="as-row" onclick="apickR('perf','no',this,'t')"><div class="as-dot"></div><div class="as-re">✅</div><div><div class="as-rt">No change — performing normally</div><div class="as-rd">Stable academically and socially</div></div></div>
+        <div class="as-row" onclick="apickR('perf','slight',this,'w')"><div class="as-dot"></div><div class="as-re">📉</div><div><div class="as-rt">Slight decline in engagement</div><div class="as-rd">Less focused, mild drop noticed</div></div></div>
+        <div class="as-row" onclick="apickR('perf','moderate',this,'w')"><div class="as-dot"></div><div class="as-re">⚠️</div><div><div class="as-rt">Moderate decline — relying on AI for classwork</div><div class="as-rd">Using AI to avoid independent thinking</div></div></div>
+        <div class="as-row" onclick="apickR('perf','severe',this,'d')"><div class="as-dot"></div><div class="as-re">🚨</div><div><div class="as-rt">Significant concern — AI replacing all thinking</div><div class="as-rd">Cannot complete any work independently</div></div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="as-btn-back" onclick="aGoS(3)">← Back</button>
+      <button class="as-btn-submit" onclick="aGenerate()">Generate Report 🎯</button>
+      <span style="font-size:11px;color:var(--t3)">Section 4 of 4</span>
+      <span style="font-size:11px;color:var(--coral);display:none" id="aerr4">Please answer all questions.</span>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="ap-result" style="display:none">
+    <div style="background:linear-gradient(135deg,#0f1117,#1a2744);border-radius:14px;padding:28px;text-align:center;margin-bottom:16px;border:1px solid var(--border2)">
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:8px">Wellness Assessment Report</div>
+      <div style="font-size:26px;font-weight:900;margin-bottom:8px" id="ar-level">MEDIUM RISK</div>
+      <div style="font-family:monospace;font-size:56px;font-weight:700;line-height:1;margin-bottom:8px" id="ar-score">0.42</div>
+      <div style="font-size:10px;color:var(--t3);margin-bottom:12px">Algorithmic score — not a clinical diagnosis</div>
+      <div style="display:inline-block;padding:5px 16px;border-radius:20px;font-size:11px;font-weight:700" id="ar-chip">Review Recommended</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+      <div class="chart-card" style="text-align:center;border-top:3px solid" id="arb-ads"><div style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px" id="art-ads">ADS</div><div style="font-family:monospace;font-size:26px;font-weight:700;margin-bottom:3px" id="arv-ads">14.3</div><div style="font-size:11px;color:var(--t2)">AI Dependence</div><div style="font-size:10px;font-weight:600;margin-top:3px" id="arg-ads">target &lt; 8.0</div></div>
+      <div class="chart-card" style="text-align:center;border-top:3px solid" id="arb-pwri"><div style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px" id="art-pwri">PWRI</div><div style="font-family:monospace;font-size:26px;font-weight:700;margin-bottom:3px" id="arv-pwri">0.29</div><div style="font-size:11px;color:var(--t2)">Physical Risk</div><div style="font-size:10px;font-weight:600;margin-top:3px" id="arg-pwri">target &lt; 0.15</div></div>
+      <div class="chart-card" style="text-align:center;border-top:3px solid" id="arb-dar"><div style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;display:inline-block;margin-bottom:6px" id="art-dar">DAR</div><div style="font-family:monospace;font-size:26px;font-weight:700;margin-bottom:3px" id="arv-dar">1.50</div><div style="font-size:11px;color:var(--t2)">Decision Autonomy</div><div style="font-size:10px;font-weight:600;margin-top:3px" id="arg-dar">target &gt; 3.0</div></div>
+    </div>
+    <div class="chart-card" style="margin-bottom:12px">
+      <div class="chart-title" style="margin-bottom:12px">Recommended Programs</div>
+      <div id="ar-progs"></div>
+    </div>
+    <button onclick="aReset()" style="background:var(--surf2);color:var(--t1);border:none;padding:9px 18px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">← New Assessment</button>
+  </div>
+</div>
+
+
+<div class="page" id="page-screentime">
+  <div class="page-header" style="margin-top:16px">
+    <div class="page-title">Screen Time Manager</div>
+    <div class="page-sub">City guideline: 90-minute daily AI screen cap. View all youth who exceed the limit and assign a counselor.</div>
+  </div>
+
+  <!-- SUMMARY STATS -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--coral)">
+      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--coral)" id="st-exceed-90">—</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Exceed 90 min limit</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--gold)">
+      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--gold)" id="st-exceed-180">—</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Exceed 180 min</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--teal)">
+      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--teal)" id="st-assigned">0</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Counselors Assigned</div>
+    </div>
+    <div class="chart-card" style="text-align:center;border-top:3px solid var(--blue)">
+      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--blue)" id="st-unassigned">—</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Still Need Assignment</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="chart-card" style="margin-bottom:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div style="font-size:12px;font-weight:600;color:var(--t1)">Show youth exceeding:</div>
+    <button class="st-filter-btn active" id="stf-90" onclick="stFilter(90)">90 min (City Guideline)</button>
+    <button class="st-filter-btn" id="stf-120" onclick="stFilter(120)">120 min</button>
+    <button class="st-filter-btn" id="stf-180" onclick="stFilter(180)">180 min (High Risk)</button>
+    <button class="st-filter-btn" id="stf-240" onclick="stFilter(240)">240 min (Critical)</button>
+    <button onclick="stAssignAll()" style="margin-left:auto;background:var(--teal);color:var(--bg);border:none;padding:8px 16px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Assign All to Ms. Johnson</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="chart-card" style="padding:0;overflow:hidden">
+    <div style="overflow-x:auto;max-height:480px;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:var(--surf2);position:sticky;top:0;z-index:5">
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">ID</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Age</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Tool</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Screen Time</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Eye Strain</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">PWRI</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Status</th>
+            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Assign Counselor</th>
+          </tr>
+        </thead>
+        <tbody id="st-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px">
+      <div style="font-size:11px;color:var(--t2)" id="st-footer-text">Loading...</div>
     </div>
   </div>
 </div>
 
-<!-- ── PAGE: ABOUT ─────────────────────────────────────────────────── -->
-<div class="page" id="page-about">
-  <div class="page-header" style="margin-top:16px"><div class="page-title">About This Project</div><div class="page-sub">MRP Team 18 · Saint Louis University · IS 5960 · Spring 2026</div></div>
-  <div class="chart-grid-2">
-    <div class="chart-card">
-      <div class="chart-title">Team Members</div><div class="chart-sub" style="margin-bottom:12px">Five specialist roles</div>
-      <table><thead><tr><th>Name</th><th>Role</th></tr></thead><tbody>
-        <tr><td>Dinesh Kalcheti</td><td>Project Manager</td></tr>
-        <tr><td>Sama Harshitha</td><td>Business Analyst</td></tr>
-        <tr><td>Vamsi Batchu</td><td>Data Analyst / Modeler</td></tr>
-        <tr><td>Pranathi Kuppili</td><td>Prototype Designer</td></tr>
-        <tr><td>Shaik Nasir</td><td>System Architect</td></tr>
-      </tbody></table>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Dataset Summary</div><div class="chart-sub" style="margin-bottom:12px">Synthetic, Kaggle-calibrated</div>
-      <table><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody>
-        <tr><td>Total Records</td><td>1,500 youth profiles</td></tr>
-        <tr><td>Variables</td><td>22 behavioral &amp; physical</td></tr>
-        <tr><td>Age Range</td><td>13–24 years</td></tr>
-        <tr><td>AI Tool Categories</td><td>5</td></tr>
-        <tr><td>Computed KPIs</td><td>ADS, PWRI, DAR</td></tr>
-        <tr><td>Sponsor</td><td>Dr. Tatiana Cardona, SLU</td></tr>
-      </tbody></table>
-    </div>
-  </div>
-</div>
-
-</main>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
@@ -2241,7 +2472,7 @@ PAGE_RENDERERS['risk'] = function() {
       <td>${r.verify}</td>
       <td style="color:${r.decide?'var(--teal)':'var(--coral)'}">${r.decide?'Yes':'No'}</td>
       <td>${r.delay}s</td>
-      <td>${EYE_LBL[r.eye]}</td>
+      <td>${ST_EYE_LBL[r.eye]}</td>
       <td><span class="badge badge-${r.risk}">${r.risk==='H'?'HIGH':r.risk==='M'?'MED':'LOW'}</span></td>
     </tr>`).join('');
 };
@@ -2384,13 +2615,12 @@ PAGE_RENDERERS['interventions'] = function() {
 
   // Store programs globally so showIntDetail can access them
   window._intPrograms = programs;
-  window._intData = d;
 };
 
 function showIntDetail(progId) {
   var programs = window._intPrograms;
-  var d = window._intData || filteredData;
-  if (!programs) return;
+  var d = filteredData;  // always use current filtered data
+  if (!programs) { alert('Please visit the Interventions page first.'); return; }
   var prog = programs.find(function(p) { return p.id === progId; });
   if (!prog) return;
 
@@ -2443,90 +2673,202 @@ PAGE_RENDERERS['assessment'] = function() {
   updateAssessment();
 };
 
-function updateAssessment() {
-  var P   = +document.getElementById('a-prompts').value;
-  var V   = +document.getElementById('a-verify').value;
-  var S   = +document.getElementById('a-screen').value;
-  var R   = +document.getElementById('a-reliance').value;
-  var Del = +document.getElementById('a-delay').value;
-  var C2  = +document.getElementById('a-conf').value;
-  var E   = +document.getElementById('a-eye').value;
-  var D   = +document.getElementById('a-decide').value;
-  var St  = +document.getElementById('a-stiff').value;
+function updateAssessment() { /* replaced by click-card assessment */ }
 
-  // Update slider labels
-  var eyeLabels = ['0 (None)','1 (Low)','2 (Medium)','3 (High)'];
-  var relLabels = ['','Low','Low-Med','Medium','Med-High','High'];
-  document.getElementById('a-prompts-val').textContent = P;
-  document.getElementById('a-verify-val').textContent  = V;
-  document.getElementById('a-screen-val').textContent  = S + ' min';
-  document.getElementById('a-reliance-val').textContent= R + ' — ' + (relLabels[R]||'');
-  document.getElementById('a-delay-val').textContent   = Del + 's';
-  document.getElementById('a-conf-val').textContent    = C2;
-  document.getElementById('a-eye-val').textContent     = eyeLabels[E] || E;
 
-  // Compute KPIs
-  var ads  = S > 0 ? +((P - V) / (S / 60)).toFixed(2) : 0;
-  var pwri = +((E/3*0.5) + (St*0.3) + (S/480*0.2)).toFixed(3);
-  var dar  = D > 0 ? +((D * C2) / (1 + Del/60)).toFixed(2) : 0;
+// ── ASSESSMENT WIZARD ─────────────────────────────────────────
+var AA = {};
+var A_KEYS = [['prompts','verify','tool'],['decide','delay','conf'],['screen','eye','stiff'],['age','reliance','perf']];
+var A_LBLS = ['Section 1 of 4 — AI Usage','Section 2 of 4 — Decisions','Section 3 of 4 — Wellness','Section 4 of 4 — Background'];
 
-  // Risk score
-  var rs = (P/100)*0.20 + (1-V/10)*0.25 + (D?0:1)*0.20 + (Del/600)*0.10 + (E/3)*0.10 + St*0.05 + ((R-1)/4)*0.10;
-  rs = Math.min(1, Math.max(0, rs));
-  var riskLabel = rs >= 0.65 ? 'HIGH RISK' : rs >= 0.40 ? 'MEDIUM RISK' : 'LOW RISK';
-  var riskColor = rs >= 0.65 ? 'var(--coral)' : rs >= 0.40 ? 'var(--gold)' : 'var(--teal)';
-
-  var rl = document.getElementById('a-risk-label');
-  var rs2= document.getElementById('a-risk-score');
-  if (rl) { rl.textContent = riskLabel; rl.style.color = riskColor; }
-  if (rs2){ rs2.textContent = rs.toFixed(2); rs2.style.color = riskColor; }
-
-  // KPI display
-  var kpiEl = document.getElementById('a-kpis');
-  if (kpiEl) {
-    kpiEl.innerHTML =
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'
-      + '<div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">'
-      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">ADS</div>'
-      + '<div style="font-size:22px;font-weight:700;color:' + (ads<8?'var(--teal)':'var(--coral)') + ';font-family:monospace">' + ads + '</div>'
-      + '<div style="font-size:9px;color:var(--t3)">target &lt; 8.0</div>'
-      + '</div>'
-      + '<div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">'
-      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">PWRI</div>'
-      + '<div style="font-size:22px;font-weight:700;color:' + (pwri<0.15?'var(--teal)':'var(--coral)') + ';font-family:monospace">' + pwri + '</div>'
-      + '<div style="font-size:9px;color:var(--t3)">target &lt; 0.15</div>'
-      + '</div>'
-      + '<div style="background:var(--surf2);padding:10px;border-radius:7px;text-align:center">'
-      + '<div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px">DAR</div>'
-      + '<div style="font-size:22px;font-weight:700;color:' + (dar>3?'var(--teal)':'var(--coral)') + ';font-family:monospace">' + dar + '</div>'
-      + '<div style="font-size:9px;color:var(--t3)">target &gt; 3.0</div>'
-      + '</div>'
-      + '</div>';
+function apick(k,v,el,col){
+  el.parentElement.querySelectorAll('.as-tile').forEach(function(t){t.className='as-tile';});
+  el.classList.add(col?'a'+col:'ax'); AA[k]=v;
+}
+function apickR(k,v,el,col){
+  el.parentElement.querySelectorAll('.as-row').forEach(function(r){r.className='as-row';});
+  el.classList.add('a'+col); AA[k]=v;
+}
+function aGoS(n){
+  [1,2,3,4].forEach(function(i){
+    document.getElementById('ap-s'+i).style.display=i===n?'block':'none';
+    var d=document.getElementById('apd'+i);
+    d.style.background=i<n?'var(--teal)':i===n?'var(--blue)':'var(--surf3)';
+    d.style.transform=i===n?'scale(1.4)':'scale(1)';
+  });
+  document.getElementById('ap-result').style.display='none';
+  var pct=Math.round((n/4)*100);
+  document.getElementById('ap-fill').style.width=pct+'%';
+  document.getElementById('ap-pct').textContent=pct+'%';
+  document.getElementById('ap-step').textContent=A_LBLS[n-1];
+}
+function aNext(n){
+  var miss=A_KEYS[n-1].filter(function(k){return AA[k]===undefined;});
+  if(miss.length){document.getElementById('aerr'+n).style.display='inline';return;}
+  document.getElementById('aerr'+n).style.display='none';
+  aGoS(n+1);
+}
+function aGenerate(){
+  var miss=A_KEYS[3].filter(function(k){return AA[k]===undefined;});
+  if(miss.length){document.getElementById('aerr4').style.display='inline';return;}
+  var P=+AA.prompts||38,V=+AA.verify||1,S=+AA.screen||154;
+  var E=+AA.eye||1,St=+AA.stiff||0,Del=+AA.delay||86;
+  var C=+AA.conf||3.5,R=+AA.reliance||2;
+  var D=AA.decide==='yes'?1:AA.decide==='sometimes'?0.6:0;
+  var ads=S>0?+((P-V)/(S/60)).toFixed(2):0;
+  var pwri=+((E/3*0.5)+(St*0.3)+(S/480*0.2)).toFixed(3);
+  var dar=D>0?+((D*C)/(1+Del/60)).toFixed(2):0;
+  var rs=(P/100)*0.20+(1-V/10)*0.25+(D<0.5?1:D<0.9?0.5:0)*0.20+(Del/600)*0.10+(E/3)*0.10+St*0.05+((R-1)/4)*0.10;
+  rs=Math.min(1,Math.max(0,rs));
+  if(AA.perf==='severe')rs=Math.min(1,rs+0.10);
+  else if(AA.perf==='moderate')rs=Math.min(1,rs+0.05);
+  var lv,lc,ct,cb;
+  if(rs>=0.65){lv='HIGH RISK';lc='var(--coral)';ct='Immediate Intervention Required';cb='rgba(255,107,107,.15)';}
+  else if(rs>=0.40){lv='MEDIUM RISK';lc='var(--gold)';ct='Counselor Review Recommended';cb='rgba(255,209,102,.15)';}
+  else{lv='LOW RISK';lc='var(--teal)';ct='Monitor Monthly';cb='rgba(0,212,170,.15)';}
+  document.getElementById('ar-level').textContent=lv;
+  document.getElementById('ar-level').style.color=lc;
+  document.getElementById('ar-score').textContent=rs.toFixed(2);
+  document.getElementById('ar-score').style.color=lc;
+  var chip=document.getElementById('ar-chip');
+  chip.textContent=ct;chip.style.background=cb;chip.style.color=lc;
+  function sk(p,val,tgt,hi){
+    var ok=hi?val>=tgt:val<=tgt,c=ok?'var(--teal)':lc;
+    document.getElementById('arv-'+p).textContent=val;
+    document.getElementById('arv-'+p).style.color=c;
+    document.getElementById('arb-'+p).style.borderTopColor=c;
+    document.getElementById('art-'+p).style.background=ok?'rgba(0,212,170,.15)':cb;
+    document.getElementById('art-'+p).style.color=c;
+    document.getElementById('arg-'+p).style.color=c;
   }
+  sk('ads',ads,8.0,false);sk('pwri',pwri,0.15,false);sk('dar',dar,3.0,true);
+  var PROGS=[
+    {t:ads>12||V<2,ico:'📚',n:'AI Literacy Program',d:'Needs weekly classes on verifying AI outputs.',c:'var(--teal)',b:'rgba(0,212,170,.1)'},
+    {t:V<1.5,ico:'✅',n:'Fact-Check Challenge',d:'Daily gamified exercises to build verification habits.',c:'var(--gold)',b:'rgba(255,209,102,.1)'},
+    {t:pwri>0.25||S>180,ico:'📱',n:'Screen Time Guidelines',d:'Enforce the 90-minute daily AI screen cap.',c:'var(--blue)',b:'rgba(77,166,255,.1)'},
+    {t:dar<1.5||Del>90,ico:'🚫',n:'AI-Free Decision Zones',d:'Include in AI-free class periods to rebuild independent thinking.',c:'var(--coral)',b:'rgba(255,107,107,.1)'},
+    {t:R>=4,ico:'🚨',n:'Counselor Alert System',d:'Level '+R+' requires a personal 1-on-1 session this week.',c:'var(--purple)',b:'rgba(176,142,255,.1)'},
+  ];
+  var tr=PROGS.filter(function(p){return p.t;});
+  document.getElementById('ar-progs').innerHTML=tr.length===0
+    ?'<div style="color:var(--teal);font-size:12px;padding:10px;background:rgba(0,212,170,.1);border-radius:7px">No programs needed — healthy parameters</div>'
+    :tr.map(function(p){return '<div style="border:1px solid var(--border);border-left:3px solid '+p.c+';border-radius:7px;padding:11px 13px;margin-bottom:8px;background:'+p.b+'"><div style="font-size:12.5px;font-weight:700;color:'+p.c+';margin-bottom:2px">'+p.ico+' '+p.n+'</div><div style="font-size:11.5px;color:var(--t2)">'+p.d+'</div></div>';}).join('');
+  [1,2,3,4].forEach(function(i){document.getElementById('ap-s'+i).style.display='none';});
+  document.getElementById('ap-result').style.display='block';
+}
+function aReset(){
+  AA={};
+  document.querySelectorAll('.as-tile').forEach(function(t){t.className='as-tile';});
+  document.querySelectorAll('.as-row').forEach(function(r){r.className='as-row';});
+  document.getElementById('ap-result').style.display='none';
+  aGoS(1);
+}
 
-  // Triggered programs
-  var progs = [];
-  if (ads > 12 || V < 2)      progs.push({n:'AI Literacy Program', c:'var(--teal)'});
-  if (V < 1.5)                 progs.push({n:'Fact-Check Challenge', c:'var(--gold)'});
-  if (pwri > 0.25 || S > 180)  progs.push({n:'Screen Time Guidelines', c:'var(--blue)'});
-  if (dar < 1.5 || Del > 90)   progs.push({n:'AI-Free Decision Zones', c:'var(--coral)'});
-  if (R >= 4)                   progs.push({n:'Counselor Alert System', c:'var(--purple)'});
+// ── SCREEN TIME MANAGER ───────────────────────────────────────
+var ST_ASSIGN = {};
+var ST_THRESHOLD = 90;
+var ST_COUNSELORS = ['Ms. Johnson','Mr. Patel','Ms. Rivera','Mr. Thompson','Dr. Chen'];
+var ST_EYE_LBL = ['None','Low','Medium','High'];
+var TOOL_FULL2 = {Cha:'Chatbot',Vir:'Virtual Asst.',Nav:'Navigation AI',Edu:'Educational AI',Rec:'Recommendation'};
 
-  var progEl = document.getElementById('a-programs');
-  if (progEl) {
-    progEl.innerHTML =
-      '<div style="font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Triggered Programs (' + progs.length + ')</div>'
-      + (progs.length
-        ? progs.map(function(p){ return '<div style="padding:8px 12px;border-radius:6px;border-left:3px solid ' + p.c + ';background:var(--surf2);font-size:12px;font-weight:500;margin-bottom:6px">' + p.n + '</div>'; }).join('')
-        : '<div style="font-size:12px;color:var(--teal);padding:10px;background:var(--tl);border-radius:6px">✓ No programs triggered — within healthy parameters</div>')
-      + '<div style="font-size:10px;color:var(--t3);margin-top:8px">* Algorithmic output only — not a clinical assessment</div>';
+PAGE_RENDERERS['screentime'] = function() {
+  stFilter(90);
+};
+
+function stFilter(threshold) {
+  ST_THRESHOLD = threshold;
+  // Update active button
+  [90,120,180,240].forEach(function(t){
+    var btn = document.getElementById('stf-'+t);
+    if(btn) btn.className = t===threshold ? 'st-filter-btn active' : 'st-filter-btn';
+  });
+  var d = filteredData;
+  var exceeded = d.filter(function(r){return r.screen > threshold;}).sort(function(a,b){return b.screen-a.screen;});
+  // Update summary stats
+  document.getElementById('st-exceed-90').textContent  = d.filter(function(r){return r.screen>90;}).length.toLocaleString();
+  document.getElementById('st-exceed-180').textContent = d.filter(function(r){return r.screen>180;}).length.toLocaleString();
+  stUpdateFooter(exceeded.length);
+  // Render table
+  var tbody = document.getElementById('st-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = exceeded.slice(0,100).map(function(r,i){
+    var barPct = Math.min(100,(r.screen/480)*100);
+    var barCol = r.screen>300?'var(--coral)':r.screen>180?'var(--gold)':'var(--teal)';
+    var pwri = ((r.eye/3*0.5)+(r.stiffness*0.3)+(r.screen/480*0.2)).toFixed(3);
+    var assigned = ST_ASSIGN[r.id];
+    var opts = '<option value="">— Assign Counselor —</option>' +
+      ST_COUNSELORS.map(function(c){return '<option value="'+c+'"'+(assigned===c?' selected':'')+'>'+c+'</option>';}).join('');
+    var bg = i%2===1 ? 'background:var(--surf2)' : '';
+    return '<tr style="'+bg+'">'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border);color:var(--t3);font-family:monospace">#'+String(r.id).padStart(4,'0')+'</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'+r.age+'</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border);font-size:11px">'+(TOOL_FULL2[r.tool]||r.tool)+'</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'
+        + '<div class="st-bar-wrap"><div class="st-bar" style="width:'+barPct.toFixed(0)+'%;background:'+barCol+'"></div></div>'
+        + '<span style="font-weight:700;color:'+barCol+'">'+r.screen+' min</span>'
+        + (r.screen>300?'<span style="font-size:8px;font-weight:700;padding:1px 5px;background:rgba(255,107,107,.2);color:var(--coral);border-radius:3px;margin-left:4px">CRITICAL</span>':r.screen>180?'<span style="font-size:8px;font-weight:700;padding:1px 5px;background:rgba(255,209,102,.2);color:var(--gold);border-radius:3px;margin-left:4px">HIGH</span>':'')
+      + '</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'+(EYE_LBL[r.eye]||r.eye)+(r.eye>=2?' ⚠️':'')+'</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border);font-family:monospace;color:'+(pwri>0.25?'var(--coral)':'var(--t1)')+'">'+pwri+'</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'
+        + (assigned
+          ? '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,212,170,.2);color:var(--teal)">✓ Assigned</span>'
+          : '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(255,107,107,.2);color:var(--coral)">Needs Assignment</span>')
+      + '</td>'
+      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'
+        + '<select class="st-sel'+(assigned?' assigned':'')+'" id="stsel-'+r.id+'" onchange="stAssign('+r.id+',this)">'+opts+'</select>'
+      + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+function stAssign(id, sel) {
+  if(sel.value){ ST_ASSIGN[id]=sel.value; sel.classList.add('assigned'); }
+  else{ delete ST_ASSIGN[id]; sel.classList.remove('assigned'); }
+  stUpdateFooter();
+  // Update status cell
+  var row = document.getElementById('stsel-'+id).closest('tr');
+  if(row){
+    var statusTd = row.cells[6];
+    if(sel.value){
+      statusTd.innerHTML='<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,212,170,.2);color:var(--teal)">✓ Assigned</span>';
+    } else {
+      statusTd.innerHTML='<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(255,107,107,.2);color:var(--coral)">Needs Assignment</span>';
+    }
   }
+}
+
+function stAssignAll() {
+  var rows = document.getElementById('st-tbody').querySelectorAll('tr');
+  rows.forEach(function(row){
+    var sel = row.querySelector('.st-sel');
+    if(sel && !sel.value){
+      sel.value='Ms. Johnson';
+      var id = parseInt(sel.id.replace('stsel-',''));
+      ST_ASSIGN[id]='Ms. Johnson';
+      sel.classList.add('assigned');
+      var statusTd = row.cells[6];
+      statusTd.innerHTML='<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,212,170,.2);color:var(--teal)">✓ Assigned</span>';
+    }
+  });
+  stUpdateFooter();
+}
+
+function stUpdateFooter(total) {
+  var assigned = Object.keys(ST_ASSIGN).length;
+  var d = filteredData;
+  var exceed = total !== undefined ? total : d.filter(function(r){return r.screen>ST_THRESHOLD;}).length;
+  var unassigned = Math.max(0, exceed - assigned);
+  document.getElementById('st-assigned').textContent = assigned;
+  document.getElementById('st-unassigned').textContent = unassigned;
+  var ft = document.getElementById('st-footer-text');
+  if(ft) ft.innerHTML = '<strong style="color:var(--teal)">'+assigned+'</strong> students assigned &nbsp;·&nbsp; <strong style="color:var(--coral)">'+unassigned+'</strong> still need a counselor &nbsp;·&nbsp; Showing top 100 of '+exceed.toLocaleString()+' students';
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────
 PAGE_RENDERERS['overview']();
 rendered.add('overview');
-setTimeout(updateAssessment, 100);
+// assessment now uses click cards - no auto-init needed
 </script>
 </body>
 </html>
