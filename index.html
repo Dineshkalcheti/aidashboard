@@ -342,6 +342,12 @@ tr:hover td{background:var(--surf2)}
     <!-- 3 KPI stats for this cohort -->
     <div id="int-d-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px"></div>
     <!-- Youth table -->
+    <!-- ACTION PANEL -->
+    <div id="int-action-panel" style="background:var(--surf);border:1px solid var(--border2);border-radius:10px;padding:16px;margin-bottom:16px;display:none">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--teal);margin-bottom:12px">Action Center</div>
+      <div id="int-action-content"></div>
+    </div>
+
     <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px" id="int-d-table-label">Top 50 youth sorted by risk score</div>
     <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px">
       <table style="width:100%;border-collapse:collapse;font-size:11.5px">
@@ -2633,6 +2639,144 @@ function showIntDetail(progId) {
   document.getElementById('int-d-desc').textContent = prog.desc;
   document.getElementById('int-d-table-label').textContent = 'Showing top ' + Math.min(50, triggered.length) + ' youth (sorted by risk score descending)';
 
+  // ── ACTION PANEL per program ─────────────────────────────────
+  var actionPanel = document.getElementById('int-action-panel');
+  var actionContent = document.getElementById('int-action-content');
+  actionPanel.style.display = 'block';
+
+  var actions = {
+    1: function() {
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">What action is taken</div>'
+        + '<button class="act-btn" id="act-btn-1" onclick="doAction(1,this)">📚 Assign Weekly Curriculum</button>'
+        + '<div style="font-size:11px;color:var(--t3);margin-top:8px">Enrolls triggered youth into weekly school sessions teaching AI verification habits.</div>'
+        + '</div>'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">Expected outcome</div>'
+        + '<div class="target-row"><span class="tr-metric">Verification/day</span><span class="tr-before">1.12</span><span class="tr-arrow">→</span><span class="tr-after">4.0</span></div>'
+        + '<div class="target-row"><span class="tr-metric">ADS Score</span><span class="tr-before">14.29</span><span class="tr-arrow">→</span><span class="tr-after">&lt;8.0</span></div>'
+        + '<div class="target-row"><span class="tr-metric">Timeframe</span><span style="font-size:12px;color:var(--t2)">12 weeks</span></div>'
+        + '</div>'
+        + '</div>';
+    },
+    2: function() {
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">What action is taken</div>'
+        + '<button class="act-btn" id="act-btn-2" onclick="doAction(2,this)">✅ Start Daily Challenge</button>'
+        + '<div style="font-size:11px;color:var(--t3);margin-top:8px">Assigns gamified 7-day fact-check challenge. Youth must verify 1 AI output before completing each day.</div>'
+        + '<div class="prog-track-wrap" id="challenge-progress" style="display:none">'
+        + '<div style="font-size:11px;color:var(--t2)">Challenge Progress</div>'
+        + '<div class="prog-track"><div class="prog-track-fill" id="challenge-fill" style="width:14%"></div></div>'
+        + '<div style="font-size:10px;color:var(--t3);margin-top:3px">Day 1 of 7</div>'
+        + '</div>'
+        + '</div>'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">Expected outcome</div>'
+        + '<div class="target-row"><span class="tr-metric">Verification/day</span><span class="tr-before">Below 1.5</span><span class="tr-arrow">→</span><span class="tr-after">3.0+</span></div>'
+        + '<div class="target-row"><span class="tr-metric">Rule</span><span style="font-size:11.5px;color:var(--t2)">1 verified AI output per day minimum</span></div>'
+        + '<div class="target-row"><span class="tr-metric">Timeframe</span><span style="font-size:12px;color:var(--t2)">7 days per cycle</span></div>'
+        + '</div>'
+        + '</div>';
+    },
+    3: function() {
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">What action is taken</div>'
+        + '<button class="act-btn" id="act-btn-3" onclick="doAction(3,this)">📱 Send Usage Recommendation</button>'
+        + '<div style="font-size:11px;color:var(--t3);margin-top:8px">Sends city-recommended 90-minute daily screen cap guideline to triggered youth and their parents.</div>'
+        + '</div>'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">Expected outcome</div>'
+        + '<div class="target-row"><span class="tr-metric">Screen time</span><span class="tr-before">154 min</span><span class="tr-arrow">→</span><span class="tr-after">&lt;100 min</span></div>'
+        + '<div class="target-row"><span class="tr-metric">PWRI Score</span><span class="tr-before">0.29</span><span class="tr-arrow">→</span><span class="tr-after">&lt;0.15</span></div>'
+        + '<div class="target-row"><span class="tr-metric">Eye strain</span><span class="tr-before">18.3%</span><span class="tr-arrow">→</span><span class="tr-after">&lt;8%</span></div>'
+        + '</div>'
+        + '</div>';
+    },
+    4: function() {
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">Schedule AI-Free Session</div>'
+        + '<div style="font-size:11px;color:var(--t3);margin-bottom:8px">Select class days for AI-Free Decision Zones:</div>'
+        + '<div class="day-btns">'
+        + '<button class="day-btn" onclick="this.classList.toggle(&quot;selected&quot;)">Monday</button>'
+        + '<button class="day-btn" onclick="this.classList.toggle(&quot;selected&quot;)">Tuesday</button>'
+        + '<button class="day-btn" onclick="this.classList.toggle(&quot;selected&quot;)">Wednesday</button>'
+        + '<button class="day-btn" onclick="this.classList.toggle(&quot;selected&quot;)">Thursday</button>'
+        + '<button class="day-btn" onclick="this.classList.toggle(&quot;selected&quot;)">Friday</button>'
+        + '</div>'
+        + '<button class="act-btn" id="act-btn-4" onclick="doAction(4,this)" style="margin-top:12px">🚫 Confirm Schedule</button>'
+        + '<div style="font-size:11px;color:var(--t3);margin-top:6px">Classroom-based · AI tools disabled during session</div>'
+        + '</div>'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">Expected outcome</div>'
+        + '<div class="target-row"><span class="tr-metric">Decision delay</span><span class="tr-before">85.6s</span><span class="tr-arrow">→</span><span class="tr-after">&lt;50s</span></div>'
+        + '<div class="target-row"><span class="tr-metric">DAR Score</span><span class="tr-before">1.50</span><span class="tr-arrow">→</span><span class="tr-after">&gt;3.0</span></div>'
+        + '<div class="target-row"><span class="tr-metric">Cannot decide</span><span class="tr-before">32.4%</span><span class="tr-arrow">→</span><span class="tr-after">&lt;15%</span></div>'
+        + '</div>'
+        + '</div>';
+    },
+    5: function() {
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">What action is taken</div>'
+        + '<button class="act-btn" id="act-btn-5" onclick="doAction(5,this)">🚨 Send Counselor Alerts</button>'
+        + '<div style="font-size:11px;color:var(--t3);margin-top:8px">Notifies assigned school counselors for each Level 4–5 youth. Each alert triggers a 1-on-1 wellness session.</div>'
+        + '<div style="margin-top:10px;display:flex;gap:8px;align-items:center">'
+        + '<span class="status-badge sb-pending" id="alert-status">⏳ Pending</span>'
+        + '<span style="font-size:11px;color:var(--t3)" id="alert-sent-count"></span>'
+        + '</div>'
+        + '</div>'
+        + '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:8px">Expected outcome</div>'
+        + '<div class="target-row"><span class="tr-metric">Students flagged</span><span class="tr-before">34 youth</span><span class="tr-arrow">→</span><span class="tr-after">All reviewed</span></div>'
+        + '<div class="target-row"><span class="tr-metric">High reliance (L4–L5)</span><span class="tr-before">2.3%</span><span class="tr-arrow">→</span><span class="tr-after">&lt;1%</span></div>'
+        + '<div class="target-row"><span class="tr-metric">Session type</span><span style="font-size:11.5px;color:var(--t2)">1-on-1 · monthly</span></div>'
+        + '</div>'
+        + '</div>';
+    },
+    6: function() {
+      var ads = computeADS(filteredData).toFixed(2);
+      var pwri = computePWRI(filteredData).toFixed(3);
+      var dar = computeDAR(filteredData).toFixed(2);
+      var adsSug = parseFloat(ads) > 12 ? 'Increase AI Literacy sessions to twice weekly' : parseFloat(ads) > 8 ? 'Maintain current AI Literacy frequency' : 'AI Literacy target achieved';
+      var pwriSug = parseFloat(pwri) > 0.25 ? 'Reduce screen time cap from 90 to 60 minutes' : parseFloat(pwri) > 0.15 ? 'Maintain current screen time guideline' : 'Physical wellness target achieved';
+      var darSug = parseFloat(dar) < 1.5 ? 'Add AI-Free zones to all weekdays' : parseFloat(dar) < 3.0 ? 'Maintain current AI-Free zone schedule' : 'Decision autonomy target achieved';
+      return '<div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:12px">Current KPI status and recommended intensity adjustments</div>'
+        + '<div style="display:grid;gap:10px">'
+        + '<div style="background:var(--surf2);padding:12px;border-radius:8px;border-left:3px solid var(--teal)">'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+        + '<span style="font-family:monospace;font-size:16px;font-weight:700;color:'+(parseFloat(ads)>8?'var(--coral)':'var(--teal)')+'">ADS: '+ads+'</span>'
+        + '<span style="font-size:10px;color:var(--t3)">target &lt;8.0</span></div>'
+        + '<div style="font-size:12px;color:var(--t2)">→ '+adsSug+'</div>'
+        + '<button class="intensity-btn" style="margin-top:8px" onclick="toggleIntensity(this)">Apply Adjustment</button>'
+        + '</div>'
+        + '<div style="background:var(--surf2);padding:12px;border-radius:8px;border-left:3px solid var(--gold)">'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+        + '<span style="font-family:monospace;font-size:16px;font-weight:700;color:'+(parseFloat(pwri)>0.15?'var(--gold)':'var(--teal)')+'">PWRI: '+pwri+'</span>'
+        + '<span style="font-size:10px;color:var(--t3)">target &lt;0.15</span></div>'
+        + '<div style="font-size:12px;color:var(--t2)">→ '+pwriSug+'</div>'
+        + '<button class="intensity-btn" style="margin-top:8px" onclick="toggleIntensity(this)">Apply Adjustment</button>'
+        + '</div>'
+        + '<div style="background:var(--surf2);padding:12px;border-radius:8px;border-left:3px solid var(--coral)">'
+        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+        + '<span style="font-family:monospace;font-size:16px;font-weight:700;color:'+(parseFloat(dar)<3?'var(--coral)':'var(--teal)')+'">DAR: '+dar+'</span>'
+        + '<span style="font-size:10px;color:var(--t3)">target &gt;3.0</span></div>'
+        + '<div style="font-size:12px;color:var(--t2)">→ '+darSug+'</div>'
+        + '<button class="intensity-btn" style="margin-top:8px" onclick="toggleIntensity(this)">Apply Adjustment</button>'
+        + '</div>'
+        + '</div>'
+        + '</div>';
+    }
+  };
+
+  var fn = actions[prog.id];
+  actionContent.innerHTML = fn ? fn() : '';
+
+
   // KPI stats for triggered cohort
   var kpiStats = [
     { label: 'Avg ADS', val: computeADS(triggered).toFixed(2), color: 'var(--teal)' },
@@ -2863,6 +3007,43 @@ function stUpdateFooter(total) {
   document.getElementById('st-unassigned').textContent = unassigned;
   var ft = document.getElementById('st-footer-text');
   if(ft) ft.innerHTML = '<strong style="color:var(--teal)">'+assigned+'</strong> students assigned &nbsp;·&nbsp; <strong style="color:var(--coral)">'+unassigned+'</strong> still need a counselor &nbsp;·&nbsp; Showing top 100 of '+exceed.toLocaleString()+' students';
+}
+
+
+// ── INTERVENTION ACTION HANDLERS ─────────────────────────────
+function toggleIntensity(btn) {
+  btn.classList.toggle('active');
+  btn.textContent = btn.classList.contains('active') ? '✓ Adjustment Applied' : 'Apply Adjustment';
+}
+
+function doAction(progId, btn) {
+  var messages = {
+    1: { done: '✓ Curriculum Assigned', sub: 'Weekly AI Literacy sessions scheduled for all triggered youth' },
+    2: { done: '✓ Challenge Started',   sub: 'Day 1 of 7 — youth must verify 1 AI output today' },
+    3: { done: '✓ Recommendation Sent', sub: 'Usage guidelines sent to students and parents' },
+    4: { done: '✓ Sessions Scheduled',  sub: 'AI-Free Decision Zones confirmed for selected days' },
+    5: { done: '✓ Alerts Sent',         sub: 'Counselors notified — sessions will be scheduled' }
+  };
+  var msg = messages[progId];
+  if (!msg) return;
+  btn.className = 'act-btn done';
+  btn.textContent = msg.done;
+  btn.onclick = null;
+  // Show sub message
+  var sub = btn.parentElement.querySelector('.act-btn + div');
+  if (sub) { sub.textContent = msg.sub; sub.style.color = 'var(--teal)'; }
+  // Special: prog 2 — show progress bar
+  if (progId === 2) {
+    var cp = document.getElementById('challenge-progress');
+    if (cp) cp.style.display = 'block';
+  }
+  // Special: prog 5 — update alert status
+  if (progId === 5) {
+    var as = document.getElementById('alert-status');
+    var ac = document.getElementById('alert-sent-count');
+    if (as) { as.className = 'status-badge sb-done'; as.textContent = '✓ Alerts Sent'; }
+    if (ac) { var count = document.getElementById('int-d-count'); ac.textContent = (count ? count.textContent : '34') + ' counselors notified'; }
+  }
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────
