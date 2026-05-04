@@ -144,14 +144,6 @@ tr:hover td{background:var(--surf2)}
 .as-btn-next{background:var(--teal);color:var(--bg);border:none;padding:9px 20px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
 .as-btn-back{background:var(--surf2);color:var(--t2);border:none;padding:9px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit}
 .as-btn-submit{background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;border:none;padding:10px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
-/* Screen time manager */
-.st-filter-btn{background:var(--surf2);color:var(--t2);border:1px solid var(--border);padding:6px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
-.st-filter-btn:hover{border-color:var(--teal);color:var(--teal)}
-.st-filter-btn.active{background:rgba(0,212,170,.15);border-color:var(--teal);color:var(--teal);font-weight:700}
-.st-bar-wrap{width:90px;height:5px;background:var(--surf3);border-radius:3px;display:inline-block;vertical-align:middle;margin-right:6px}
-.st-bar{height:100%;border-radius:3px}
-.st-sel{background:var(--surf2);border:1px solid var(--border2);color:var(--t1);padding:4px 8px;border-radius:5px;font-size:10.5px;font-family:inherit;cursor:pointer;outline:none;min-width:120px}
-.st-sel.assigned{border-color:var(--teal);color:var(--teal)}
 
 </style>
 </head>
@@ -173,7 +165,6 @@ tr:hover td{background:var(--surf2)}
       <button class="nav-item" onclick="showPage('risk')"><span class="nav-icon">⚠️</span>Risk Profiles</button>
       <button class="nav-item" onclick="showPage('interventions')"><span class="nav-icon">🎯</span>Interventions</button>
       <button class="nav-item" onclick="showPage('assessment')"><span class="nav-icon">👤</span>Youth Assessment</button>
-      <button class="nav-item" onclick="showPage('screentime')"><span class="nav-icon">📱</span>Screen Time Manager</button>
     </div>
     <div class="nav-group">
       <div class="nav-label">Project</div>
@@ -559,66 +550,7 @@ tr:hover td{background:var(--surf2)}
 </div>
 
 
-<div class="page" id="page-screentime">
-  <div class="page-header" style="margin-top:16px">
-    <div class="page-title">Screen Time Manager</div>
-    <div class="page-sub">City guideline: 90-minute daily AI screen cap. View all youth who exceed the limit and assign a counselor.</div>
-  </div>
 
-  <!-- SUMMARY STATS -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
-    <div class="chart-card" style="text-align:center;border-top:3px solid var(--coral)">
-      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--coral)" id="st-exceed-90">—</div>
-      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Exceed 90 min limit</div>
-    </div>
-    <div class="chart-card" style="text-align:center;border-top:3px solid var(--gold)">
-      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--gold)" id="st-exceed-180">—</div>
-      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Exceed 180 min</div>
-    </div>
-    <div class="chart-card" style="text-align:center;border-top:3px solid var(--teal)">
-      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--teal)" id="st-assigned">0</div>
-      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Counselors Assigned</div>
-    </div>
-    <div class="chart-card" style="text-align:center;border-top:3px solid var(--blue)">
-      <div style="font-family:monospace;font-size:28px;font-weight:700;color:var(--blue)" id="st-unassigned">—</div>
-      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Still Need Assignment</div>
-    </div>
-  </div>
-
-  <!-- CONTROLS -->
-  <div class="chart-card" style="margin-bottom:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-    <div style="font-size:12px;font-weight:600;color:var(--t1)">Show youth exceeding:</div>
-    <button class="st-filter-btn active" id="stf-90" onclick="stFilter(90)">90 min (City Guideline)</button>
-    <button class="st-filter-btn" id="stf-120" onclick="stFilter(120)">120 min</button>
-    <button class="st-filter-btn" id="stf-180" onclick="stFilter(180)">180 min (High Risk)</button>
-    <button class="st-filter-btn" id="stf-240" onclick="stFilter(240)">240 min (Critical)</button>
-    <button onclick="stAssignAll()" style="margin-left:auto;background:var(--teal);color:var(--bg);border:none;padding:8px 16px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Assign All to Ms. Johnson</button>
-  </div>
-
-  <!-- TABLE -->
-  <div class="chart-card" style="padding:0;overflow:hidden">
-    <div style="overflow-x:auto;max-height:480px;overflow-y:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead>
-          <tr style="background:var(--surf2);position:sticky;top:0;z-index:5">
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">ID</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Age</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Tool</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Screen Time</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Eye Strain</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">PWRI</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Status</th>
-            <th style="padding:10px 14px;text-align:left;font-size:10px;color:var(--t2);font-weight:600;letter-spacing:.5px;border-bottom:1px solid var(--border)">Assign Counselor</th>
-          </tr>
-        </thead>
-        <tbody id="st-tbody"></tbody>
-      </table>
-    </div>
-    <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px">
-      <div style="font-size:11px;color:var(--t2)" id="st-footer-text">Loading...</div>
-    </div>
-  </div>
-</div>
 
 
 <script>
@@ -2915,136 +2847,7 @@ var ST_COUNSELORS = ['Ms. Johnson','Mr. Patel','Ms. Rivera','Mr. Thompson','Dr. 
 var ST_EYE_LBL = ['None','Low','Medium','High'];
 var TOOL_FULL2 = {Cha:'Chatbot',Vir:'Virtual Asst.',Nav:'Navigation AI',Edu:'Educational AI',Rec:'Recommendation'};
 
-PAGE_RENDERERS['screentime'] = function() {
-  stFilter(90);
-};
 
-function stFilter(threshold) {
-  ST_THRESHOLD = threshold;
-  // Update active button
-  [90,120,180,240].forEach(function(t){
-    var btn = document.getElementById('stf-'+t);
-    if(btn) btn.className = t===threshold ? 'st-filter-btn active' : 'st-filter-btn';
-  });
-  var d = filteredData;
-  var exceeded = d.filter(function(r){return r.screen > threshold;}).sort(function(a,b){return b.screen-a.screen;});
-  // Update summary stats
-  document.getElementById('st-exceed-90').textContent  = d.filter(function(r){return r.screen>90;}).length.toLocaleString();
-  document.getElementById('st-exceed-180').textContent = d.filter(function(r){return r.screen>180;}).length.toLocaleString();
-  stUpdateFooter(exceeded.length);
-  // Render table
-  var tbody = document.getElementById('st-tbody');
-  if(!tbody) return;
-  tbody.innerHTML = exceeded.slice(0,100).map(function(r,i){
-    var barPct = Math.min(100,(r.screen/480)*100);
-    var barCol = r.screen>300?'var(--coral)':r.screen>180?'var(--gold)':'var(--teal)';
-    var pwri = ((r.eye/3*0.5)+(r.stiffness*0.3)+(r.screen/480*0.2)).toFixed(3);
-    var assigned = ST_ASSIGN[r.id];
-    var opts = '<option value="">— Assign Counselor —</option>' +
-      ST_COUNSELORS.map(function(c){return '<option value="'+c+'"'+(assigned===c?' selected':'')+'>'+c+'</option>';}).join('');
-    var bg = i%2===1 ? 'background:var(--surf2)' : '';
-    return '<tr style="'+bg+'">'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border);color:var(--t3);font-family:monospace">#'+String(r.id).padStart(4,'0')+'</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'+r.age+'</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border);font-size:11px">'+(TOOL_FULL2[r.tool]||r.tool)+'</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'
-        + '<div class="st-bar-wrap"><div class="st-bar" style="width:'+barPct.toFixed(0)+'%;background:'+barCol+'"></div></div>'
-        + '<span style="font-weight:700;color:'+barCol+'">'+r.screen+' min</span>'
-        + (r.screen>300?'<span style="font-size:8px;font-weight:700;padding:1px 5px;background:rgba(255,107,107,.2);color:var(--coral);border-radius:3px;margin-left:4px">CRITICAL</span>':r.screen>180?'<span style="font-size:8px;font-weight:700;padding:1px 5px;background:rgba(255,209,102,.2);color:var(--gold);border-radius:3px;margin-left:4px">HIGH</span>':'')
-      + '</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'+(EYE_LBL[r.eye]||r.eye)+(r.eye>=2?' ⚠️':'')+'</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border);font-family:monospace;color:'+(pwri>0.25?'var(--coral)':'var(--t1)')+'">'+pwri+'</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'
-        + (assigned
-          ? '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,212,170,.2);color:var(--teal)">✓ Assigned</span>'
-          : '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(255,107,107,.2);color:var(--coral)">Needs Assignment</span>')
-      + '</td>'
-      + '<td style="padding:9px 13px;border-bottom:1px solid var(--border)">'
-        + '<select class="st-sel'+(assigned?' assigned':'')+'" id="stsel-'+r.id+'" onchange="stAssign('+r.id+',this)">'+opts+'</select>'
-      + '</td>'
-      + '</tr>';
-  }).join('');
-}
-
-function stAssign(id, sel) {
-  if(sel.value){ ST_ASSIGN[id]=sel.value; sel.classList.add('assigned'); }
-  else{ delete ST_ASSIGN[id]; sel.classList.remove('assigned'); }
-  stUpdateFooter();
-  // Update status cell
-  var row = document.getElementById('stsel-'+id).closest('tr');
-  if(row){
-    var statusTd = row.cells[6];
-    if(sel.value){
-      statusTd.innerHTML='<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,212,170,.2);color:var(--teal)">✓ Assigned</span>';
-    } else {
-      statusTd.innerHTML='<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(255,107,107,.2);color:var(--coral)">Needs Assignment</span>';
-    }
-  }
-}
-
-function stAssignAll() {
-  var rows = document.getElementById('st-tbody').querySelectorAll('tr');
-  rows.forEach(function(row){
-    var sel = row.querySelector('.st-sel');
-    if(sel && !sel.value){
-      sel.value='Ms. Johnson';
-      var id = parseInt(sel.id.replace('stsel-',''));
-      ST_ASSIGN[id]='Ms. Johnson';
-      sel.classList.add('assigned');
-      var statusTd = row.cells[6];
-      statusTd.innerHTML='<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,212,170,.2);color:var(--teal)">✓ Assigned</span>';
-    }
-  });
-  stUpdateFooter();
-}
-
-function stUpdateFooter(total) {
-  var assigned = Object.keys(ST_ASSIGN).length;
-  var d = filteredData;
-  var exceed = total !== undefined ? total : d.filter(function(r){return r.screen>ST_THRESHOLD;}).length;
-  var unassigned = Math.max(0, exceed - assigned);
-  document.getElementById('st-assigned').textContent = assigned;
-  document.getElementById('st-unassigned').textContent = unassigned;
-  var ft = document.getElementById('st-footer-text');
-  if(ft) ft.innerHTML = '<strong style="color:var(--teal)">'+assigned+'</strong> students assigned &nbsp;·&nbsp; <strong style="color:var(--coral)">'+unassigned+'</strong> still need a counselor &nbsp;·&nbsp; Showing top 100 of '+exceed.toLocaleString()+' students';
-}
-
-
-// ── INTERVENTION ACTION HANDLERS ─────────────────────────────
-function toggleIntensity(btn) {
-  btn.classList.toggle('active');
-  btn.textContent = btn.classList.contains('active') ? '✓ Adjustment Applied' : 'Apply Adjustment';
-}
-
-function doAction(progId, btn) {
-  var messages = {
-    1: { done: '✓ Curriculum Assigned', sub: 'Weekly AI Literacy sessions scheduled for all triggered youth' },
-    2: { done: '✓ Challenge Started',   sub: 'Day 1 of 7 — youth must verify 1 AI output today' },
-    3: { done: '✓ Recommendation Sent', sub: 'Usage guidelines sent to students and parents' },
-    4: { done: '✓ Sessions Scheduled',  sub: 'AI-Free Decision Zones confirmed for selected days' },
-    5: { done: '✓ Alerts Sent',         sub: 'Counselors notified — sessions will be scheduled' }
-  };
-  var msg = messages[progId];
-  if (!msg) return;
-  btn.className = 'act-btn done';
-  btn.textContent = msg.done;
-  btn.onclick = null;
-  // Show sub message
-  var sub = btn.parentElement.querySelector('.act-btn + div');
-  if (sub) { sub.textContent = msg.sub; sub.style.color = 'var(--teal)'; }
-  // Special: prog 2 — show progress bar
-  if (progId === 2) {
-    var cp = document.getElementById('challenge-progress');
-    if (cp) cp.style.display = 'block';
-  }
-  // Special: prog 5 — update alert status
-  if (progId === 5) {
-    var as = document.getElementById('alert-status');
-    var ac = document.getElementById('alert-sent-count');
-    if (as) { as.className = 'status-badge sb-done'; as.textContent = '✓ Alerts Sent'; }
-    if (ac) { var count = document.getElementById('int-d-count'); ac.textContent = (count ? count.textContent : '34') + ' counselors notified'; }
-  }
-}
 
 // ── BOOT ─────────────────────────────────────────────────────────
 PAGE_RENDERERS['overview']();
